@@ -2,6 +2,10 @@ package com.example.wk.mapper;
 
 import com.example.wk.entity.WkUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
+
 
 /**
  * <p>
@@ -13,4 +17,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface WkUserMapper extends BaseMapper<WkUser> {
 
+    @Select("select uuid from wk_user;")
+    List<String> findExistUuid();
 }

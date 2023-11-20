@@ -5,6 +5,10 @@ server:
     multipart:
       max-file-size: 200000000
       max-request-size: 200000000
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
   tomcat:
     relaxedPathChars: '<,>,[,\,],^,`,{,|,}'
     relaxedQueryChars: '<,>,[,\,],^,`,{,|,}'
@@ -13,18 +17,17 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/wakuang?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=GMT%2b8
+#    url: jdbc:mysql://127.0.0.1:3306/wakuang?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=GMT%2b8
+    url: jdbc:mysql://103.241.72.78:3306/test?useUnicode=true&characterEncoding=utf-8
     username: root
     password: qwer
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-  http:
-    encoding:
-      force: true
-      charset: UTF-8
-      enabled: true
   servlet:
     multipart:
       max-file-size: 200MB
       max-request-size: 200MB
+  redis:
+    host: 127.0.0.1
+    port: 6379
