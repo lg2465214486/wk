@@ -3,9 +3,9 @@ package com.example.wk.pojo;
 import lombok.Data;
 
 @Data
-public class UserListParam {
-    String keywords;
+public class ListParam {
+    String firstKeywords;
+    String lastKeywords;
     long pageNo;
-
     long pageSize;
 }

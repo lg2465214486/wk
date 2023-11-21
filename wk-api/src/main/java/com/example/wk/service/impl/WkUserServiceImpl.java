@@ -8,7 +8,7 @@ import com.example.wk.config.JsonResult;
 import com.example.wk.entity.WkUser;
 import com.example.wk.mapper.WkUserMapper;
 import com.example.wk.pojo.LoginParam;
-import com.example.wk.pojo.UserListParam;
+import com.example.wk.pojo.ListParam;
 import com.example.wk.service.IWkUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.wk.util.MyUtil;
@@ -43,13 +43,15 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
     }
 
     @Override
-    public Page<WkUser> findUserList(UserListParam param) {
+    public Page<WkUser> findUserList(ListParam param) {
         Page<WkUser> page = new Page<>();
         page.setCurrent(param.getPageNo());
         page.setSize(param.getPageSize());
         LambdaQueryWrapper<WkUser> wrapper = Wrappers.lambdaQuery(WkUser.class);
-        if (null != param.getKeywords())
-            wrapper.like(WkUser::getUserEmail, param.getKeywords()).or().like(WkUser::getUserName, param.getKeywords());
+        if (null != param.getLastKeywords())
+            wrapper.like(WkUser::getUserEmail, param.getLastKeywords()).or().like(WkUser::getUserName, param.getLastKeywords());
+        if (null != param.getFirstKeywords())
+            wrapper.and(i -> i.like(WkUser::getUuid, param.getFirstKeywords()));
         Page<WkUser> wkUserPage = userMapper.selectPage(page, wrapper);
         return wkUserPage;
     }

@@ -3,7 +3,7 @@ package com.example.wk.controller;
 import com.example.wk.config.JsonResult;
 import com.example.wk.entity.WkUser;
 import com.example.wk.pojo.SysEditParam;
-import com.example.wk.pojo.UserListParam;
+import com.example.wk.pojo.ListParam;
 import com.example.wk.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,7 @@ public class AdminController {
     @Autowired
     private IWkUnderwayService underwayService;
     @Autowired
-    private IWkWithdrawService wkWithdrawService;
+    private IWkWithdrawService withdrawService;
     @Autowired
     private CommonService commonService;
     /**
@@ -30,8 +30,26 @@ public class AdminController {
      * @return
      */
     @GetMapping("/user/all")
-    public JsonResult userList(UserListParam param) {
+    public JsonResult userList(ListParam param) {
         return new JsonResult(wkUserService.findUserList(param));
+    }
+
+    /**
+     * 充值列表
+     * @return
+     */
+    @GetMapping("/topUp/all")
+    public JsonResult topUpList(ListParam param) {
+        return new JsonResult(topUpService.findTopUpList(param));
+    }
+
+    /**
+     * 提现列表
+     * @return
+     */
+    @GetMapping("/withdraw/all")
+    public JsonResult withdrawList(ListParam param) {
+        return new JsonResult(withdrawService.findWithdrawList(param));
     }
 
     /**

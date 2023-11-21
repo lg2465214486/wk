@@ -1,7 +1,9 @@
 package com.example.wk.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.wk.entity.WkWithdraw;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.wk.pojo.ListParam;
 
 /**
  * <p>
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IWkWithdrawService extends IService<WkWithdraw> {
 
+    Page<WkWithdraw> findWithdrawList(ListParam param);
 }

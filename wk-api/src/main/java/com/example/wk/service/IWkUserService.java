@@ -5,7 +5,7 @@ import com.example.wk.config.JsonResult;
 import com.example.wk.entity.WkUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.wk.pojo.LoginParam;
-import com.example.wk.pojo.UserListParam;
+import com.example.wk.pojo.ListParam;
 
 
 /**
@@ -20,7 +20,7 @@ public interface IWkUserService extends IService<WkUser> {
 
     JsonResult userLogin(LoginParam login);
 
-    Page<WkUser> findUserList(UserListParam param);
+    Page<WkUser> findUserList(ListParam param);
 
     JsonResult addUser(WkUser param);
 }
