@@ -23,6 +23,8 @@ public class AdminController {
     private IWkUnderwayService underwayService;
     @Autowired
     private IWkWithdrawService wkWithdrawService;
+    @Autowired
+    private CommonService commonService;
     /**
      * 用户列表
      * @return
@@ -37,29 +39,17 @@ public class AdminController {
      * @param param
      * @return
      */
-    @GetMapping("/user/add")
-    public JsonResult addUser(WkUser param) {
+    @PostMapping("/user/add")
+    public JsonResult addUser(@RequestBody WkUser param) {
         return wkUserService.addUser(param);
     }
 
     /**
-     * 编辑简介
-     * @param intro
-     * @return
+     * 获取值
      */
-    @PostMapping("/intro/edit")
-    public JsonResult editIntro(@RequestBody String intro) {
-        return new JsonResult(systemService.editKeyValue("intro", intro));
-    }
-
-    /**
-     * 编辑TRC20
-     * @param trc
-     * @return
-     */
-    @PostMapping("/TRC20/edit")
-    public JsonResult editTRC20(@RequestBody String trc) {
-        return new JsonResult(systemService.editKeyValue("TRC20", trc));
+    @GetMapping("/getValue")
+    public JsonResult getValue(String name) {
+        return new JsonResult(commonService.getValueByKey(name));
     }
 
     /**
