@@ -4,6 +4,7 @@ import com.example.wk.config.JsonResult;
 import com.example.wk.entity.WkUser;
 import com.example.wk.pojo.SysEditParam;
 import com.example.wk.pojo.ListParam;
+import com.example.wk.pojo.UserParam;
 import com.example.wk.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -58,8 +59,18 @@ public class AdminController {
      * @return
      */
     @PostMapping("/user/add")
-    public JsonResult addUser(@RequestBody WkUser param) {
+    public JsonResult addUser(@RequestBody UserParam param) {
         return wkUserService.addUser(param);
+    }
+
+    /**
+     * 修改用户
+     * @param param
+     * @return
+     */
+    @PostMapping("/user/edit")
+    public JsonResult editUser(@RequestBody UserParam param) {
+        return wkUserService.editUser(param);
     }
 
     /**

@@ -13,6 +13,7 @@ import com.example.wk.mapper.WkUserMapper;
 import com.example.wk.mapper.WkWithdrawMapper;
 import com.example.wk.pojo.LoginParam;
 import com.example.wk.pojo.ListParam;
+import com.example.wk.pojo.UserParam;
 import com.example.wk.pojo.dto.DealDetail;
 import com.example.wk.pojo.dto.UserInfo;
 import com.example.wk.service.IWkUserService;
@@ -71,23 +72,35 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
     }
 
     @Override
-    public JsonResult addUser(WkUser param) {
+    public JsonResult addUser(UserParam param) {
         if (null == param.getUserName() || null == param.getUserEmail() || null == param.getPhone() || null == param.getPwd())
             throw new RuntimeException("not null !!");
         List<String> uuids = userMapper.findExistUuid();
         String uuid = MyUtil.getUUID(uuids);
 
-        param.setUuid(uuid);
-        param.setIsStop(false);
-        param.setBtc(BigDecimal.ZERO);
-        param.setEth(BigDecimal.ZERO);
-        param.setUstd(BigDecimal.ZERO);
-        param.setCreatedDate(LocalDateTime.now());
-        param.setUpdatedDate(LocalDateTime.now());
-        int insert = userMapper.insert(param);
+        WkUser u = new WkUser();
+        u.setUuid(uuid);
+        u.setIsStop(false);
+        u.setCreatedDate(LocalDateTime.now());
+        u.setUpdatedDate(LocalDateTime.now());
+
+        u.setUserEmail(param.getUserEmail());
+        u.setUserName(param.getUserName());
+        u.setPhone(param.getPhone());
+        u.setPwd(param.getPwd());
+
+        u.setBtc(null == param.getBtc()? BigDecimal.ZERO:new BigDecimal(param.getBtc()));
+        u.setEth(null == param.getEth()? BigDecimal.ZERO:new BigDecimal(param.getEth()));
+        u.setUstd(null == param.getUstd()? BigDecimal.ZERO:new BigDecimal(param.getUstd()));
+        int insert = userMapper.insert(u);
         if (insert != 1)
             return new JsonResult(500, "error");
         return new JsonResult("success");
+    }
+
+    @Override
+    public JsonResult editUser(UserParam param) {
+        return null;
     }
 
     @Override
@@ -133,4 +146,5 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         userInfo.setBtc(wkUser.getBtc().setScale(4, RoundingMode.HALF_UP).toPlainString());
         return userInfo;
     }
+
 }

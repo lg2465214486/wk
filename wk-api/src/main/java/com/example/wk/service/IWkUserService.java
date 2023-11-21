@@ -6,6 +6,7 @@ import com.example.wk.entity.WkUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.wk.pojo.LoginParam;
 import com.example.wk.pojo.ListParam;
+import com.example.wk.pojo.UserParam;
 import com.example.wk.pojo.dto.DealDetail;
 import com.example.wk.pojo.dto.UserInfo;
 
@@ -26,9 +27,11 @@ public interface IWkUserService extends IService<WkUser> {
 
     Page<WkUser> findUserList(ListParam param);
 
-    JsonResult addUser(WkUser param);
+    JsonResult addUser(UserParam param);
 
     List<DealDetail> getTransactionRecordById(Integer id);
 
     UserInfo getUserInfo();
+
+    JsonResult editUser(UserParam param);
 }
