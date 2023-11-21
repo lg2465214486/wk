@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.wk.pojo.LoginParam;
 import com.example.wk.pojo.ListParam;
 import com.example.wk.pojo.dto.DealDetail;
+import com.example.wk.pojo.dto.UserInfo;
 
 import java.util.List;
 
@@ -28,4 +29,6 @@ public interface IWkUserService extends IService<WkUser> {
     JsonResult addUser(WkUser param);
 
     List<DealDetail> getTransactionRecordById(Integer id);
+
+    UserInfo getUserInfo();
 }

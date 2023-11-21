@@ -14,6 +14,7 @@ import com.example.wk.mapper.WkWithdrawMapper;
 import com.example.wk.pojo.LoginParam;
 import com.example.wk.pojo.ListParam;
 import com.example.wk.pojo.dto.DealDetail;
+import com.example.wk.pojo.dto.UserInfo;
 import com.example.wk.service.IWkUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.wk.util.MyDateUtils;
@@ -102,13 +103,13 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
             if (o instanceof WkTopUp) {
                 WkTopUp v = (WkTopUp) o;
                 detail.setType("充值");
-                detail.setAmount(v.getSales().setScale(4, RoundingMode.HALF_UP));
+                detail.setAmount(v.getSales().setScale(4, RoundingMode.HALF_UP).toPlainString());
                 detail.setTime(MyDateUtils.dateTimeFormat(v.getCreatedDate()));
                 detail.setLocalDateTime(v.getCreatedDate());
             } else {
                 WkWithdraw v = (WkWithdraw) o;
                 detail.setType("提现");
-                detail.setAmount(v.getSales().setScale(4, RoundingMode.HALF_UP));
+                detail.setAmount(v.getSales().setScale(4, RoundingMode.HALF_UP).toPlainString());
                 detail.setTime(MyDateUtils.dateTimeFormat(v.getCreatedDate()));
                 detail.setLocalDateTime(v.getCreatedDate());
             }
@@ -116,5 +117,20 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         }
         Collections.sort(details);
         return details;
+    }
+
+    @Override
+    public UserInfo getUserInfo() {
+        UserInfo userInfo = new UserInfo();
+        WkUser wkUser = userMapper.selectById(AdminSession.getInstance().admin().getId());
+        userInfo.setUserEmail(wkUser.getUserEmail());
+        userInfo.setPhone(wkUser.getPhone());
+        userInfo.setUserName(wkUser.getUserName());
+        userInfo.setUuid(wkUser.getUuid());
+
+        userInfo.setEth(wkUser.getEth().setScale(4, RoundingMode.HALF_UP).toPlainString());
+        userInfo.setUstd(wkUser.getUstd().setScale(4, RoundingMode.HALF_UP).toPlainString());
+        userInfo.setBtc(wkUser.getBtc().setScale(4, RoundingMode.HALF_UP).toPlainString());
+        return userInfo;
     }
 }

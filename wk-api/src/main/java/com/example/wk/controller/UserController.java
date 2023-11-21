@@ -19,7 +19,7 @@ public class UserController {
      */
     @GetMapping("/info")
     public JsonResult userInfo() {
-        return new JsonResult(AdminSession.getInstance().admin());
+        return new JsonResult(userService.getUserInfo());
     }
 
     /**
