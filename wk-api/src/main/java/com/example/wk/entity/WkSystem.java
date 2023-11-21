@@ -22,8 +22,8 @@ public class WkSystem implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "`key`", type = IdType.NONE)
-    private String key;
+    @TableId(value = "sys_key", type = IdType.NONE)
+    private String sysKey;
 
     private String sysValue;
 

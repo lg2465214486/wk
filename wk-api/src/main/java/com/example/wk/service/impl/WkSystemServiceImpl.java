@@ -24,10 +24,10 @@ public class WkSystemServiceImpl extends ServiceImpl<WkSystemMapper, WkSystem> i
 
     @Override
     public String editKeyValue(String key, String value) {
-        WkSystem sys = systemMapper.selectOne(Wrappers.lambdaQuery(WkSystem.class).eq(WkSystem::getKey, key));
+        WkSystem sys = systemMapper.selectOne(Wrappers.lambdaQuery(WkSystem.class).eq(WkSystem::getSysKey, key));
         if (null == sys) {
             sys = new WkSystem();
-            sys.setKey(key);
+            sys.setSysKey(key);
             sys.setSysValue(value);
             systemMapper.insert(sys);
             return "success";

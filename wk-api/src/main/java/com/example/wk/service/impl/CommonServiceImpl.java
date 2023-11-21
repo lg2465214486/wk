@@ -20,7 +20,7 @@ public class CommonServiceImpl implements CommonService {
 
     @Override
     public String getValueByKey(String key) {
-        WkSystem v = systemMapper.selectOne(Wrappers.lambdaQuery(WkSystem.class).eq(WkSystem::getKey, key));
+        WkSystem v = systemMapper.selectOne(Wrappers.lambdaQuery(WkSystem.class).eq(WkSystem::getSysKey, key));
         return null == v ? "" : v.getSysValue();
     }
 }
