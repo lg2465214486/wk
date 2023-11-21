@@ -33,7 +33,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new AdminHandlerInterceptor()).addPathPatterns("/**").excludePathPatterns("/admin/**");
+        registry.addInterceptor(new AdminHandlerInterceptor()).addPathPatterns("/**").excludePathPatterns("/admin/**").excludePathPatterns("/pub/**");
     }
 
     public class AdminHandlerInterceptor extends HandlerInterceptorAdapter {
@@ -51,6 +51,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 }
             }catch (Exception e){
                 log.error("系统错误："+e);
+                response.setCharacterEncoding("UTF-8");
+                response.setContentType("application/json; charset=utf-8");
                 PrintWriter out = null;
                 try {
                     out = response.getWriter();
