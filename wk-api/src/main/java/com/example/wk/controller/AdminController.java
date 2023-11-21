@@ -74,14 +74,6 @@ public class AdminController {
     }
 
     /**
-     * 获取值
-     */
-    @GetMapping("/getValue")
-    public JsonResult getValue(String name) {
-        return new JsonResult(commonService.getValueByKey(name));
-    }
-
-    /**
      * 系统变量编辑
      * @param param
      * @return

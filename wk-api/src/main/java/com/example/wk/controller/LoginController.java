@@ -40,9 +40,9 @@ public class LoginController {
     /**
      * 获取值
      */
-    @GetMapping("/getIntro")
-    public JsonResult getValue() {
-        return new JsonResult(commonService.getValueByKey("intro"));
+    @GetMapping("/getValue")
+    public JsonResult getValue(String name) {
+        return new JsonResult(commonService.getValueByKey(name));
     }
 
 }
