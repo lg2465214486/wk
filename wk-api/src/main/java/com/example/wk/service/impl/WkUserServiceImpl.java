@@ -100,7 +100,19 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
 
     @Override
     public JsonResult editUser(UserParam param) {
-        return null;
+        WkUser user = userMapper.selectOne(Wrappers.lambdaQuery(WkUser.class).eq(WkUser::getUuid, param.getUuid()));
+        user.setUserName(param.getUserName());
+        user.setUserEmail(param.getUserEmail());
+        user.setPhone(param.getPhone());
+        user.setPwd(param.getPwd());
+        user.setIsStop(param.getIsStop());
+
+        user.setEth(new BigDecimal(param.getEth()));
+        user.setBtc(new BigDecimal(param.getBtc()));
+        user.setUstd(new BigDecimal(param.getUstd()));
+
+        userMapper.updateById(user);
+        return new JsonResult("success");
     }
 
     @Override

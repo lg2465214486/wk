@@ -41,4 +41,6 @@ public class UserParam {
 
     String eth;
 
+    Boolean isStop;
+
 }
