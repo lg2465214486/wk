@@ -53,6 +53,8 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         WkUser wkUser = userMapper.selectOne(Wrappers.lambdaQuery(WkUser.class).eq(WkUser::getUuid, login.getLoginName()));
         if (null == wkUser)
             return new JsonResult(500, "Username or password is incorrect.");
+        if (wkUser.getIsStop())
+            return new JsonResult(500, "Username is stop.");
         String token = AdminSession.getInstance().setAdmin(wkUser);
         return new JsonResult(token);
     }
