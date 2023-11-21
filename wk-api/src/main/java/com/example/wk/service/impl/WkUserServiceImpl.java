@@ -5,18 +5,27 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.wk.config.AdminSession;
 import com.example.wk.config.JsonResult;
+import com.example.wk.entity.WkTopUp;
 import com.example.wk.entity.WkUser;
+import com.example.wk.entity.WkWithdraw;
+import com.example.wk.mapper.WkTopUpMapper;
 import com.example.wk.mapper.WkUserMapper;
+import com.example.wk.mapper.WkWithdrawMapper;
 import com.example.wk.pojo.LoginParam;
 import com.example.wk.pojo.ListParam;
+import com.example.wk.pojo.dto.DealDetail;
 import com.example.wk.service.IWkUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.wk.util.MyDateUtils;
 import com.example.wk.util.MyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,6 +41,10 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
 
     @Autowired
     private WkUserMapper userMapper;
+    @Autowired
+    private WkTopUpMapper topUpMapper;
+    @Autowired
+    private WkWithdrawMapper withdrawMapper;
 
     @Override
     public JsonResult userLogin(LoginParam login) {
@@ -74,5 +87,34 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         if (insert != 1)
             return new JsonResult(500, "error");
         return new JsonResult("success");
+    }
+
+    @Override
+    public List<DealDetail> getTransactionRecordById(Integer id) {
+        List<DealDetail> details = new ArrayList<>();
+        List<Object> dealList = new ArrayList<>();
+        List<WkTopUp> topUps = topUpMapper.selectList(Wrappers.lambdaQuery(WkTopUp.class).eq(WkTopUp::getUserId, id));
+        List<WkWithdraw> withdraws = withdrawMapper.selectList(Wrappers.lambdaQuery(WkWithdraw.class).eq(WkWithdraw::getUserId, id));
+        dealList.addAll(topUps);
+        dealList.addAll(withdraws);
+        for (Object o : dealList) {
+            DealDetail detail = new DealDetail();
+            if (o instanceof WkTopUp) {
+                WkTopUp v = (WkTopUp) o;
+                detail.setType("充值");
+                detail.setAmount(v.getSales().setScale(4, RoundingMode.HALF_UP));
+                detail.setTime(MyDateUtils.dateTimeFormat(v.getCreatedDate()));
+                detail.setLocalDateTime(v.getCreatedDate());
+            } else {
+                WkWithdraw v = (WkWithdraw) o;
+                detail.setType("提现");
+                detail.setAmount(v.getSales().setScale(4, RoundingMode.HALF_UP));
+                detail.setTime(MyDateUtils.dateTimeFormat(v.getCreatedDate()));
+                detail.setLocalDateTime(v.getCreatedDate());
+            }
+            details.add(detail);
+        }
+        Collections.sort(details);
+        return details;
     }
 }
