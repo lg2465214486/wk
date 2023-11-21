@@ -43,22 +43,22 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 if (!request.getMethod().equalsIgnoreCase(RequestMethod.OPTIONS.toString())) {
                     WkUser user = AdminSession.getInstance().admin();
                     if (null == user) {
-                        throw new Exception("登录失效");
-                    }else{
+                        throw new Exception("login failure");
+                    } else {
                         String token = request.getHeader("X-Token");
                         redisTemplate.opsForValue().set(SESSION_KEY + token, user, 30, TimeUnit.MINUTES);
                     }
                 }
-            }catch (Exception e){
-                log.error("系统错误："+e);
+            } catch (Exception e) {
+                log.error("sys error: " + e);
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("application/json; charset=utf-8");
                 PrintWriter out = null;
                 try {
                     out = response.getWriter();
                     out.append("{\"code\": 401, \"message\": \"" + e.getMessage() + "\"}");
-                }catch (IOException ex){
-                    log.error(""+ex);
+                } catch (IOException ex) {
+                    log.error("" + ex);
                     out.close();
                 }
                 return false;
