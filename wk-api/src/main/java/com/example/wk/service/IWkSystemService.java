@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IWkSystemService extends IService<WkSystem> {
 
+    String editKeyValue(String key, String value);
 }
