@@ -36,7 +36,7 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
     @Autowired
     private WkUserMapper userMapper;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String start(MiningParam param) throws Exception{
         AdminSession session = AdminSession.getInstance();
@@ -65,7 +65,7 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
         return "success";
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String stop() {
         AdminSession session = AdminSession.getInstance();

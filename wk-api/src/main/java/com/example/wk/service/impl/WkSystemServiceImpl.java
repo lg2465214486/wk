@@ -34,7 +34,7 @@ public class WkSystemServiceImpl extends ServiceImpl<WkSystemMapper, WkSystem> i
     @Autowired
     private WkWithdrawMapper withdrawMapper;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String editKeyValue(String key, String value) {
         WkSystem sys = systemMapper.selectOne(Wrappers.lambdaQuery(WkSystem.class).eq(WkSystem::getSysKey, key));
@@ -50,7 +50,7 @@ public class WkSystemServiceImpl extends ServiceImpl<WkSystemMapper, WkSystem> i
         return "success";
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String topUpExamine(ExamineParam param) {
         WkTopUp wkTopUp = topUpMapper.selectById(param.getId());
@@ -60,7 +60,7 @@ public class WkSystemServiceImpl extends ServiceImpl<WkSystemMapper, WkSystem> i
         return "success";
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String withdrawExamine(ExamineParam param) {
         WkWithdraw wkWithdraw = withdrawMapper.selectById(param.getId());

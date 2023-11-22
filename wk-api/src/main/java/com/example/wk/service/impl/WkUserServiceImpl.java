@@ -75,7 +75,7 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         return wkUserPage;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public JsonResult addUser(UserParam param) {
         if (null == param.getUserName() || null == param.getUserEmail() || null == param.getPhone() || null == param.getPwd())
@@ -103,7 +103,7 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         return new JsonResult("success");
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public JsonResult editUser(UserParam param) {
         WkUser user = userMapper.selectOne(Wrappers.lambdaQuery(WkUser.class).eq(WkUser::getUuid, param.getUuid()));
@@ -121,7 +121,7 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         return new JsonResult("success");
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String topUp(MoneyOptionParam param) {
         WkUser u = userMapper.selectByUuid(AdminSession.getInstance().admin().getUuid());
@@ -135,7 +135,7 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         return "success";
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String withdraw(MoneyOptionParam param) {
         WkUser u = userMapper.selectByUuid(AdminSession.getInstance().admin().getUuid());
