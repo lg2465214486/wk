@@ -23,6 +23,7 @@ import com.example.wk.util.MyDateUtils;
 import com.example.wk.util.MyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -74,6 +75,7 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         return wkUserPage;
     }
 
+    @Transactional
     @Override
     public JsonResult addUser(UserParam param) {
         if (null == param.getUserName() || null == param.getUserEmail() || null == param.getPhone() || null == param.getPwd())
@@ -101,6 +103,7 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         return new JsonResult("success");
     }
 
+    @Transactional
     @Override
     public JsonResult editUser(UserParam param) {
         WkUser user = userMapper.selectOne(Wrappers.lambdaQuery(WkUser.class).eq(WkUser::getUuid, param.getUuid()));

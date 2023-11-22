@@ -7,6 +7,7 @@ import com.example.wk.service.IWkSystemService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -22,6 +23,7 @@ public class WkSystemServiceImpl extends ServiceImpl<WkSystemMapper, WkSystem> i
     @Autowired
     private WkSystemMapper systemMapper;
 
+    @Transactional
     @Override
     public String editKeyValue(String key, String value) {
         WkSystem sys = systemMapper.selectOne(Wrappers.lambdaQuery(WkSystem.class).eq(WkSystem::getSysKey, key));
