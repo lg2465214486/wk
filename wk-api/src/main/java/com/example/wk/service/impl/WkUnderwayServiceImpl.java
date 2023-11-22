@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 /**
@@ -34,6 +35,11 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
     @Override
     public String start(MiningParam param) {
         WkUser u = AdminSession.getInstance().admin();
+        List<WkUnderway> underways = underwayMapper.selectList(Wrappers.lambdaQuery(WkUnderway.class)
+                .eq(WkUnderway::getUserId, u.getId()).eq(WkUnderway::getStatus, 1));
+        for (WkUnderway underway : underways) {
+            this.stopUnderwayByEntity(underway);
+        }
         WkUnderway wkUnderway = new WkUnderway();
         wkUnderway.setUserId(u.getId());
         wkUnderway.setMoneyQuantity(new BigDecimal(param.getMoneyQuantity()));
@@ -54,14 +60,32 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
         List<WkUnderway> underways = underwayMapper.selectList(Wrappers.lambdaQuery(WkUnderway.class)
                 .eq(WkUnderway::getUserId, u.getId()).eq(WkUnderway::getStatus, 1));
         for (WkUnderway underway : underways) {
-            LocalDateTime now = LocalDateTime.now();
-            underway.setStatus(2);
-            //todo: 收益计算
-            underway.setEarnings(BigDecimal.ZERO);
-            underway.setEndDate(now);
-            underway.setUpdatedDate(now);
-            underwayMapper.updateById(underway);
+            this.stopUnderwayByEntity(underway);
         }
         return "success";
+    }
+
+    private void stopUnderwayById(Integer id) {
+        WkUnderway underway = underwayMapper.selectById(id);
+        this.stopUnderwayByEntity(underway);
+    }
+
+    private void stopUnderwayByEntity(WkUnderway underway) {
+        LocalDateTime now = LocalDateTime.now();
+        underway.setStatus(2);
+        BigDecimal coefficient = this.earningsCoefficient(underway.getStartDate(), now);
+        underway.setEarnings(underway.getMoneyQuantity().multiply(coefficient));
+        underway.setEndDate(now);
+        underway.setUpdatedDate(now);
+        underwayMapper.updateById(underway);
+    }
+
+    private BigDecimal earningsCoefficient(LocalDateTime start, LocalDateTime end) {
+        //获取秒数
+        long nowSecond = start.toEpochSecond(ZoneOffset.ofHours(0));
+        long endSecond = end.toEpochSecond(ZoneOffset.ofHours(0));
+        long absSeconds = Math.abs(nowSecond - endSecond);
+
+        return new BigDecimal(absSeconds * 10 / 100 / 24 / 60 / 60);
     }
 }
