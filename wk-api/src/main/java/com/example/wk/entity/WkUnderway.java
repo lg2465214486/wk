@@ -42,7 +42,7 @@ public class WkUnderway implements Serializable {
     /**
      * 1:进行中，2:已暂停
      */
-    private Boolean status;
+    private Integer status;
 
     /**
      * 开始时间
