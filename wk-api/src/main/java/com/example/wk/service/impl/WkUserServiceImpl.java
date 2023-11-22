@@ -133,12 +133,14 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
                 detail.setAmount(v.getSales().setScale(4, RoundingMode.HALF_UP).toPlainString());
                 detail.setTime(MyDateUtils.dateTimeFormat(v.getCreatedDate()));
                 detail.setLocalDateTime(v.getCreatedDate());
+                detail.setStatus(v.getStatus() == 1? "待审核":(v.getStatus() == 2? "通过":"不通过"));
             } else {
                 WkWithdraw v = (WkWithdraw) o;
                 detail.setType("提现");
                 detail.setAmount(v.getSales().setScale(4, RoundingMode.HALF_UP).toPlainString());
                 detail.setTime(MyDateUtils.dateTimeFormat(v.getCreatedDate()));
                 detail.setLocalDateTime(v.getCreatedDate());
+                detail.setStatus(v.getStatus() == 1? "待审核":(v.getStatus() == 2? "通过":"不通过"));
             }
             details.add(detail);
         }

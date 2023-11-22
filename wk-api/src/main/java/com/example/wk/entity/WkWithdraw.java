@@ -33,7 +33,7 @@ public class WkWithdraw implements Serializable {
 
     private String trc20Address;
 
-    private Boolean status;
+    private Integer status;
 
     private LocalDateTime createdDate;
 
