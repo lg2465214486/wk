@@ -15,7 +15,7 @@ import com.example.wk.pojo.dto.Earnings;
  */
 public interface IWkUnderwayService extends IService<WkUnderway> {
 
-    String start(MiningParam param);
+    String start(MiningParam param) throws Exception;
 
     String stop();
 

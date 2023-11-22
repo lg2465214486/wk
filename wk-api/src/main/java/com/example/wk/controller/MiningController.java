@@ -37,7 +37,7 @@ public class MiningController {
      * @return
      */
     @PostMapping("/start")
-    public JsonResult startMining(@RequestBody MiningParam param) {
+    public JsonResult startMining(@RequestBody MiningParam param) throws Exception{
         return new JsonResult(underwayService.start(param));
     }
 

@@ -5,6 +5,7 @@ import com.example.wk.config.AdminSession;
 import com.example.wk.entity.WkUnderway;
 import com.example.wk.entity.WkUser;
 import com.example.wk.mapper.WkUnderwayMapper;
+import com.example.wk.mapper.WkUserMapper;
 import com.example.wk.pojo.MiningParam;
 import com.example.wk.pojo.dto.Earnings;
 import com.example.wk.service.IWkUnderwayService;
@@ -32,18 +33,24 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
 
     @Autowired
     private WkUnderwayMapper underwayMapper;
+    @Autowired
+    private WkUserMapper userMapper;
 
     @Transactional
     @Override
-    public String start(MiningParam param) {
-        WkUser u = AdminSession.getInstance().admin();
+    public String start(MiningParam param) throws Exception{
+        AdminSession session = AdminSession.getInstance();
+        WkUser user = userMapper.selectById(session.admin().getId());
+        if (user.getUstd().compareTo(new BigDecimal(param.getMoneyQuantity())) < 0)
+            throw new Exception("not sufficient funds");
+        user.setUstd(user.getUstd().subtract(new BigDecimal(param.getMoneyQuantity())));
         List<WkUnderway> underways = underwayMapper.selectList(Wrappers.lambdaQuery(WkUnderway.class)
-                .eq(WkUnderway::getUserId, u.getId()).eq(WkUnderway::getStatus, 1));
+                .eq(WkUnderway::getUserId, user.getId()).eq(WkUnderway::getStatus, 1));
         for (WkUnderway underway : underways) {
             this.stopUnderwayByEntity(underway);
         }
         WkUnderway wkUnderway = new WkUnderway();
-        wkUnderway.setUserId(u.getId());
+        wkUnderway.setUserId(user.getId());
         wkUnderway.setMoneyQuantity(new BigDecimal(param.getMoneyQuantity()));
         wkUnderway.setEarnings(BigDecimal.ZERO);
         wkUnderway.setStatus(1);
@@ -51,6 +58,9 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
         wkUnderway.setEndDate(null);
         wkUnderway.setCreatedDate(LocalDateTime.now());
         wkUnderway.setUpdatedDate(LocalDateTime.now());
+        
+        userMapper.updateById(user);
+        session.updateAdmin(user);
         underwayMapper.insert(wkUnderway);
         return "success";
     }
@@ -58,16 +68,38 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
     @Transactional
     @Override
     public String stop() {
-        WkUser u = AdminSession.getInstance().admin();
+        AdminSession session = AdminSession.getInstance();
+        WkUser user = userMapper.selectById(session.admin().getId());
         List<WkUnderway> underways = underwayMapper.selectList(Wrappers.lambdaQuery(WkUnderway.class)
-                .eq(WkUnderway::getUserId, u.getId()).eq(WkUnderway::getStatus, 1));
+                .eq(WkUnderway::getUserId, user.getId()).eq(WkUnderway::getStatus, 1));
+        BigDecimal earnings = BigDecimal.ZERO;
         for (WkUnderway underway : underways) {
-            this.stopUnderwayByEntity(underway);
+            earnings.add(this.stopUnderwayByEntity(underway));
         }
+
+        user.setUstd(user.getUstd().add(earnings));
+        userMapper.updateById(user);
+        session.updateAdmin(user);
         return "success";
     }
 
-    @Transactional
+    private BigDecimal stopUnderwayById(Integer id) {
+        WkUnderway underway = underwayMapper.selectById(id);
+        return this.stopUnderwayByEntity(underway);
+    }
+
+    private BigDecimal stopUnderwayByEntity(WkUnderway underway) {
+        LocalDateTime now = LocalDateTime.now();
+        underway.setStatus(2);
+        BigDecimal coefficient = this.earningsCoefficient(underway.getStartDate(), now);
+        underway.setEarnings(underway.getMoneyQuantity().multiply(coefficient).setScale(4, RoundingMode.HALF_UP));
+        underway.setEndDate(now);
+        underway.setUpdatedDate(now);
+        underwayMapper.updateById(underway);
+        return underway.getEarnings();
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Earnings findEarnings() {
         WkUser u = AdminSession.getInstance().admin();
@@ -82,21 +114,6 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
         earnings.setEarnings(underway.getEarnings().setScale(4, RoundingMode.HALF_UP).toPlainString());
         earnings.setMoneyQuantity(underway.getMoneyQuantity().setScale(4, RoundingMode.HALF_UP).toPlainString());
         return earnings;
-    }
-
-    private void stopUnderwayById(Integer id) {
-        WkUnderway underway = underwayMapper.selectById(id);
-        this.stopUnderwayByEntity(underway);
-    }
-
-    private void stopUnderwayByEntity(WkUnderway underway) {
-        LocalDateTime now = LocalDateTime.now();
-        underway.setStatus(2);
-        BigDecimal coefficient = this.earningsCoefficient(underway.getStartDate(), now);
-        underway.setEarnings(underway.getMoneyQuantity().multiply(coefficient));
-        underway.setEndDate(now);
-        underway.setUpdatedDate(now);
-        underwayMapper.updateById(underway);
     }
 
     private BigDecimal earningsCoefficient(LocalDateTime start, LocalDateTime end) {
