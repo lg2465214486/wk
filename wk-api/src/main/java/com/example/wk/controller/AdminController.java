@@ -1,7 +1,7 @@
 package com.example.wk.controller;
 
 import com.example.wk.config.JsonResult;
-import com.example.wk.entity.WkUser;
+import com.example.wk.pojo.ExamineParam;
 import com.example.wk.pojo.SysEditParam;
 import com.example.wk.pojo.ListParam;
 import com.example.wk.pojo.UserParam;
@@ -15,7 +15,7 @@ public class AdminController {
 
 
     @Autowired
-    private IWkUserService wkUserService;
+    private IWkUserService userService;
     @Autowired
     private IWkSystemService systemService;
     @Autowired
@@ -32,7 +32,7 @@ public class AdminController {
      */
     @GetMapping("/user/all")
     public JsonResult userList(ListParam param) {
-        return new JsonResult(wkUserService.findUserList(param));
+        return new JsonResult(userService.findUserList(param));
     }
 
     /**
@@ -54,13 +54,31 @@ public class AdminController {
     }
 
     /**
+     * 充值审批
+     * @return
+     */
+    @GetMapping("/topUp/examine")
+    public JsonResult topUpExamine(ExamineParam param) {
+        return new JsonResult(systemService.topUpExamine(param));
+    }
+
+    /**
+     * 提现审批
+     * @return
+     */
+    @GetMapping("/withdraw/examine")
+    public JsonResult withdrawExamine(ExamineParam param) {
+        return new JsonResult(systemService.withdrawExamine(param));
+    }
+
+    /**
      * 新增用户
      * @param param
      * @return
      */
     @PostMapping("/user/add")
     public JsonResult addUser(@RequestBody UserParam param) {
-        return wkUserService.addUser(param);
+        return userService.addUser(param);
     }
 
     /**
@@ -70,7 +88,7 @@ public class AdminController {
      */
     @PostMapping("/user/edit")
     public JsonResult editUser(@RequestBody UserParam param) {
-        return wkUserService.editUser(param);
+        return userService.editUser(param);
     }
 
     /**

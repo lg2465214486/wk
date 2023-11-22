@@ -2,6 +2,7 @@ package com.example.wk.service;
 
 import com.example.wk.entity.WkSystem;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.wk.pojo.ExamineParam;
 
 /**
  * <p>
@@ -14,4 +15,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface IWkSystemService extends IService<WkSystem> {
 
     String editKeyValue(String key, String value);
+
+    String topUpExamine(ExamineParam param);
+
+    String withdrawExamine(ExamineParam param);
 }
