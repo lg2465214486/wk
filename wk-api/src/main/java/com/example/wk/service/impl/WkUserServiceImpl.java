@@ -124,13 +124,29 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
     @Transactional
     @Override
     public String topUp(MoneyOptionParam param) {
-        return null;
+        WkUser u = userMapper.selectByUuid(AdminSession.getInstance().admin().getUuid());
+        WkTopUp topUp = new WkTopUp();
+        topUp.setUserId(u.getId());
+        topUp.setSales(new BigDecimal(param.getAmount()));
+        topUp.setStatus(1);
+        topUp.setCreatedDate(LocalDateTime.now());
+        topUp.setUpdatedDate(LocalDateTime.now());
+        topUpMapper.insert(topUp);
+        return "success";
     }
 
     @Transactional
     @Override
     public String withdraw(MoneyOptionParam param) {
-        return null;
+        WkUser u = userMapper.selectByUuid(AdminSession.getInstance().admin().getUuid());
+        WkWithdraw withdraw = new WkWithdraw();
+        withdraw.setUserId(u.getId());
+        withdraw.setSales(new BigDecimal(param.getAmount()));
+        withdraw.setStatus(1);
+        withdraw.setCreatedDate(LocalDateTime.now());
+        withdraw.setUpdatedDate(LocalDateTime.now());
+        withdrawMapper.insert(withdraw);
+        return "success";
     }
 
     @Override
