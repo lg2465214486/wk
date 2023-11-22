@@ -74,7 +74,7 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
                 .eq(WkUnderway::getUserId, user.getId()).eq(WkUnderway::getStatus, 1));
         BigDecimal earnings = BigDecimal.ZERO;
         for (WkUnderway underway : underways) {
-            earnings.add(this.stopUnderwayByEntity(underway));
+            earnings = earnings.add(this.stopUnderwayByEntity(underway)).add(underway.getMoneyQuantity());
         }
 
         user.setUstd(user.getUstd().add(earnings));
@@ -103,7 +103,7 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
     public Earnings findEarnings() {
         WkUser u = AdminSession.getInstance().admin();
         WkUnderway underway = underwayMapper.selectOne(Wrappers.lambdaQuery(WkUnderway.class)
-                .eq(WkUnderway::getId, u.getId())
+                .eq(WkUnderway::getUserId, u.getId())
                 .eq(WkUnderway::getStatus, 1));
         if (null == underway)
             return null;
