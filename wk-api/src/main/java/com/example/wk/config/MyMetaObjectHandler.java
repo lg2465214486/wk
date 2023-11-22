@@ -5,6 +5,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -33,12 +34,12 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         //3.3.0之前使用setFieldValByName方法
 //        this.setFieldValByName("createTime",new Date(),metaObject);
         //3.3.0之后推荐使用strictInsertFill方法
-        this.strictInsertFill(metaObject,"createdDate", Timestamp.class,new Timestamp(new Date().getTime()));
+        this.strictInsertFill(metaObject,"createdDate", LocalDateTime.class,LocalDateTime.now());
         //设置修改时间属性和值
         //3.3.0之前使用setFieldValByName方法
 //        this.setFieldValByName("updateTime",new Date(),metaObject);
         //3.3.0之后推荐使用strictInsertFill方法
-        this.strictInsertFill(metaObject,"updatedDate",Timestamp.class,new Timestamp(new Date().getTime()));
+        this.strictInsertFill(metaObject,"updatedDate",LocalDateTime.class,LocalDateTime.now());
     }
 
     //更新时的填充策略
@@ -48,7 +49,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         //3.3.0之前使用setFieldValByName方法
 //        this.setFieldValByName("updateTime",new Date(),metaObject);
         //3.3.0之后推荐使用strictUpdateFill方法
-        this.strictInsertFill(metaObject,"updatedDate",Timestamp.class,new Timestamp(new Date().getTime()));
+        this.strictInsertFill(metaObject,"updatedDate", LocalDateTime.class,LocalDateTime.now());
     }
 
     //修改严格填充策略
