@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -63,6 +64,18 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
             this.stopUnderwayByEntity(underway);
         }
         return "success";
+    }
+
+    @Transactional
+    @Override
+    public String findEarnings() {
+        WkUser u = AdminSession.getInstance().admin();
+        WkUnderway underway = underwayMapper.selectOne(Wrappers.lambdaQuery(WkUnderway.class)
+                .eq(WkUnderway::getId, u.getId())
+                .eq(WkUnderway::getStatus, 1));
+        underway.setEarnings(underway.getMoneyQuantity().multiply(this.earningsCoefficient(underway.getStartDate(), LocalDateTime.now())));
+        underwayMapper.updateById(underway);
+        return underway.getEarnings().setScale(4, RoundingMode.HALF_UP).toPlainString();
     }
 
     private void stopUnderwayById(Integer id) {

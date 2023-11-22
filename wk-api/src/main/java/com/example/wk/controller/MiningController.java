@@ -13,6 +13,7 @@ public class MiningController {
 
     @Autowired
     private IWkUnderwayService underwayService;
+
     /**
      * 总收益查询
      * @return
@@ -28,7 +29,7 @@ public class MiningController {
      */
     @GetMapping("/earnings")
     public JsonResult findEarnings() {
-        return new JsonResult("success");
+        return new JsonResult(underwayService.findEarnings());
     }
 
     /**

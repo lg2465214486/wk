@@ -17,4 +17,6 @@ public interface IWkUnderwayService extends IService<WkUnderway> {
     String start(MiningParam param);
 
     String stop();
+
+    String findEarnings();
 }
