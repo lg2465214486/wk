@@ -16,6 +16,17 @@ server:
 
 spring:
   datasource:
+    dbcp2:
+      min-idle: 3
+      max-idle: 20
+      max-wait-millis: 5000
+      validation-query: select 1
+      initial-size: 1
+      max-total: 20
+      max-active: 3
+      time-between-eviction-runs-millis: 60000
+      test-while-idle: true
+      test-on-borrow: true
     driver-class-name: com.mysql.cj.jdbc.Driver
 #    url: jdbc:mysql://127.0.0.1:3306/wakuang?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=GMT%2b8
     url: jdbc:mysql://103.241.72.78:3306/test?useUnicode=true&characterEncoding=utf-8

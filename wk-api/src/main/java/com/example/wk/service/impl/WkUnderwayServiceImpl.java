@@ -91,8 +91,7 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
     private BigDecimal stopUnderwayByEntity(WkUnderway underway) {
         LocalDateTime now = LocalDateTime.now();
         underway.setStatus(2);
-        BigDecimal coefficient = this.earningsCoefficient(underway.getStartDate(), now);
-        underway.setEarnings(underway.getMoneyQuantity().multiply(coefficient).setScale(4, RoundingMode.HALF_UP));
+        underway.setEarnings(this.earningsCoefficient(underway.getStartDate(), now, underway.getMoneyQuantity()));
         underway.setEndDate(now);
         underway.setUpdatedDate(now);
         underwayMapper.updateById(underway);
@@ -108,7 +107,7 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
                 .eq(WkUnderway::getStatus, 1));
         if (null == underway)
             return null;
-        underway.setEarnings(underway.getMoneyQuantity().multiply(this.earningsCoefficient(underway.getStartDate(), LocalDateTime.now())));
+        underway.setEarnings(this.earningsCoefficient(underway.getStartDate(), LocalDateTime.now(), underway.getMoneyQuantity()));
         underwayMapper.updateById(underway);
         Earnings earnings = new Earnings();
         earnings.setEarnings(underway.getEarnings().setScale(4, RoundingMode.HALF_UP).toPlainString());
@@ -116,12 +115,13 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
         return earnings;
     }
 
-    private BigDecimal earningsCoefficient(LocalDateTime start, LocalDateTime end) {
+    private BigDecimal earningsCoefficient(LocalDateTime start, LocalDateTime end, BigDecimal sales) {
         //获取秒数
         long nowSecond = start.toEpochSecond(ZoneOffset.ofHours(0));
         long endSecond = end.toEpochSecond(ZoneOffset.ofHours(0));
         long absSeconds = Math.abs(nowSecond - endSecond);
-
-        return new BigDecimal(absSeconds * 10 / 100 / 24 / 60 / 60);
+        BigDecimal daySales = sales.multiply(new BigDecimal("0.10")).setScale(4,BigDecimal.ROUND_HALF_UP);
+        BigDecimal secondSales = daySales.divide(BigDecimal.valueOf(86400), 4,BigDecimal.ROUND_HALF_UP);
+        return secondSales.multiply(BigDecimal.valueOf(absSeconds)).setScale(4,BigDecimal.ROUND_HALF_UP);
     }
 }
