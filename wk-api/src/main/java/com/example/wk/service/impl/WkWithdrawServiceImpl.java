@@ -1,9 +1,6 @@
 package com.example.wk.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.wk.entity.WkUser;
 import com.example.wk.entity.WkWithdraw;
 import com.example.wk.mapper.WkWithdrawMapper;
 import com.example.wk.pojo.ListParam;
@@ -28,6 +25,9 @@ public class WkWithdrawServiceImpl extends ServiceImpl<WkWithdrawMapper, WkWithd
 
     @Override
     public Page<WkWithdraw> findWithdrawList(ListParam param) {
-        return null;
+        Page<WkWithdraw> page = new Page<>();
+        page.setCurrent(param.getPageNo());
+        page.setSize(param.getPageSize());
+        return withdrawMapper.selectPageByParam(page, param);
     }
 }
