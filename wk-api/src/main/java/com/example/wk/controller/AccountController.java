@@ -2,21 +2,33 @@ package com.example.wk.controller;
 
 
 import com.example.wk.config.JsonResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.wk.pojo.MoneyOptionParam;
+import com.example.wk.service.IWkUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/account")
 public class AccountController {
 
+    @Autowired
+    private IWkUserService userService;
+
     /**
      * 充值
      * @return
      */
-    @PostMapping("/recharge")
-    public JsonResult recharge() {
-        return new JsonResult("success");
+    @PostMapping("/topUp")
+    public JsonResult topUp(@RequestBody MoneyOptionParam param) {
+        return new JsonResult(userService.topUp(param));
+    }
+
+    /**
+     * 提现
+     * @return
+     */
+    @PostMapping("/withdraw")
+    public JsonResult withdraw(@RequestBody MoneyOptionParam param) {
+        return new JsonResult(userService.withdraw(param));
     }
 }

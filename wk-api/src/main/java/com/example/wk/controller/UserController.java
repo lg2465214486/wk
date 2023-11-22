@@ -32,22 +32,4 @@ public class UserController {
         return new JsonResult(userService.getTransactionRecordById(AdminSession.getInstance().admin().getId()));
     }
 
-    /**
-     * 充值
-     * @return
-     */
-    @PostMapping("/topUp")
-    public JsonResult topUp(@RequestBody MoneyOptionParam param) {
-        return new JsonResult(userService.topUp(param));
-    }
-
-    /**
-     * 提现
-     * @return
-     */
-    @PostMapping("/withdraw")
-    public JsonResult withdraw(@RequestBody MoneyOptionParam param) {
-        return new JsonResult(userService.withdraw(param));
-    }
-
 }
