@@ -6,6 +6,7 @@ import com.example.wk.mapper.WkTopUpMapper;
 import com.example.wk.pojo.ListParam;
 import com.example.wk.service.IWkTopUpService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,8 +20,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class WkTopUpServiceImpl extends ServiceImpl<WkTopUpMapper, WkTopUp> implements IWkTopUpService {
 
+    @Autowired
+    private WkTopUpMapper topUpMapper;
     @Override
     public Page<WkTopUp> findTopUpList(ListParam param) {
-        return null;
+        Page<WkTopUp> page = new Page<>();
+        page.setCurrent(param.getPageNo());
+        page.setSize(param.getPageSize());
+        return topUpMapper.selectPageByParam(page, param);
     }
 }

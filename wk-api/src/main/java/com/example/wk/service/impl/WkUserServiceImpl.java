@@ -13,6 +13,7 @@ import com.example.wk.mapper.WkUserMapper;
 import com.example.wk.mapper.WkWithdrawMapper;
 import com.example.wk.pojo.LoginParam;
 import com.example.wk.pojo.ListParam;
+import com.example.wk.pojo.MoneyOptionParam;
 import com.example.wk.pojo.UserParam;
 import com.example.wk.pojo.dto.DealDetail;
 import com.example.wk.pojo.dto.UserInfo;
@@ -22,6 +23,7 @@ import com.example.wk.util.MyDateUtils;
 import com.example.wk.util.MyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -73,6 +75,7 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         return wkUserPage;
     }
 
+    @Transactional
     @Override
     public JsonResult addUser(UserParam param) {
         if (null == param.getUserName() || null == param.getUserEmail() || null == param.getPhone() || null == param.getPwd())
@@ -100,6 +103,7 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         return new JsonResult("success");
     }
 
+    @Transactional
     @Override
     public JsonResult editUser(UserParam param) {
         WkUser user = userMapper.selectOne(Wrappers.lambdaQuery(WkUser.class).eq(WkUser::getUuid, param.getUuid()));
@@ -115,6 +119,34 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
 
         userMapper.updateById(user);
         return new JsonResult("success");
+    }
+
+    @Transactional
+    @Override
+    public String topUp(MoneyOptionParam param) {
+        WkUser u = userMapper.selectByUuid(AdminSession.getInstance().admin().getUuid());
+        WkTopUp topUp = new WkTopUp();
+        topUp.setUserId(u.getId());
+        topUp.setSales(new BigDecimal(param.getAmount()));
+        topUp.setStatus(1);
+        topUp.setCreatedDate(LocalDateTime.now());
+        topUp.setUpdatedDate(LocalDateTime.now());
+        topUpMapper.insert(topUp);
+        return "success";
+    }
+
+    @Transactional
+    @Override
+    public String withdraw(MoneyOptionParam param) {
+        WkUser u = userMapper.selectByUuid(AdminSession.getInstance().admin().getUuid());
+        WkWithdraw withdraw = new WkWithdraw();
+        withdraw.setUserId(u.getId());
+        withdraw.setSales(new BigDecimal(param.getAmount()));
+        withdraw.setStatus(1);
+        withdraw.setCreatedDate(LocalDateTime.now());
+        withdraw.setUpdatedDate(LocalDateTime.now());
+        withdrawMapper.insert(withdraw);
+        return "success";
     }
 
     @Override
@@ -133,12 +165,14 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
                 detail.setAmount(v.getSales().setScale(4, RoundingMode.HALF_UP).toPlainString());
                 detail.setTime(MyDateUtils.dateTimeFormat(v.getCreatedDate()));
                 detail.setLocalDateTime(v.getCreatedDate());
+                detail.setStatus(v.getStatus() == 1? "待审核":(v.getStatus() == 2? "通过":"不通过"));
             } else {
                 WkWithdraw v = (WkWithdraw) o;
                 detail.setType("提现");
                 detail.setAmount(v.getSales().setScale(4, RoundingMode.HALF_UP).toPlainString());
                 detail.setTime(MyDateUtils.dateTimeFormat(v.getCreatedDate()));
                 detail.setLocalDateTime(v.getCreatedDate());
+                detail.setStatus(v.getStatus() == 1? "待审核":(v.getStatus() == 2? "通过":"不通过"));
             }
             details.add(detail);
         }

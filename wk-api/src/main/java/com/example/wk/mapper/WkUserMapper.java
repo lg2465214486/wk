@@ -19,4 +19,7 @@ public interface WkUserMapper extends BaseMapper<WkUser> {
 
     @Select("select uuid from wk_user;")
     List<String> findExistUuid();
+
+    @Select("select * from wk_user where uuid=#{uuid}")
+    WkUser selectByUuid(String uuid);
 }

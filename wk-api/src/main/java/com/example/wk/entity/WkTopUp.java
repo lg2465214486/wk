@@ -37,7 +37,7 @@ public class WkTopUp implements Serializable {
     /**
      * 审核状态 1：待审核，2：通过，3：不通过
      */
-    private Boolean status;
+    private Integer status;
 
     private LocalDateTime updatedDate;
 

@@ -2,7 +2,6 @@ package com.example.wk.pojo.dto;
 
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -15,6 +14,7 @@ public class DealDetail implements Comparable<DealDetail>{
     String time;
     String type; // 1:充值 0:提现
     String amount;
+    String status;
 
     LocalDateTime localDateTime;
 

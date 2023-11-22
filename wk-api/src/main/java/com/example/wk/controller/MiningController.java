@@ -2,14 +2,20 @@ package com.example.wk.controller;
 
 
 import com.example.wk.config.JsonResult;
+import com.example.wk.pojo.MiningParam;
+import com.example.wk.service.IWkUnderwayService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/mining")
 public class MiningController {
 
+    @Autowired
+    private IWkUnderwayService underwayService;
+
     /**
-     * 取数查询
+     * 总收益查询
      * @return
      */
     @GetMapping("/total")
@@ -18,12 +24,21 @@ public class MiningController {
     }
 
     /**
+     * 收益查询
+     * @return
+     */
+    @GetMapping("/earnings")
+    public JsonResult findEarnings() {
+        return new JsonResult(underwayService.findEarnings());
+    }
+
+    /**
      * 开始
      * @return
      */
     @PostMapping("/start")
-    public JsonResult startMining() {
-        return new JsonResult("success");
+    public JsonResult startMining(@RequestBody MiningParam param) {
+        return new JsonResult(underwayService.start(param));
     }
 
     /**
@@ -32,7 +47,7 @@ public class MiningController {
      */
     @PostMapping("/stop")
     public JsonResult stopMining() {
-        return new JsonResult("success");
+        return new JsonResult(underwayService.stop());
     }
 
 }
