@@ -3,6 +3,7 @@ package com.example.wk.service;
 import com.example.wk.entity.WkUnderway;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.wk.pojo.MiningParam;
+import com.example.wk.pojo.dto.Earnings;
 
 /**
  * <p>
@@ -18,5 +19,5 @@ public interface IWkUnderwayService extends IService<WkUnderway> {
 
     String stop();
 
-    String findEarnings();
+    Earnings findEarnings();
 }

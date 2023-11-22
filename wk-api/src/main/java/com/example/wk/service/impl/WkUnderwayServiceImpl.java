@@ -6,6 +6,7 @@ import com.example.wk.entity.WkUnderway;
 import com.example.wk.entity.WkUser;
 import com.example.wk.mapper.WkUnderwayMapper;
 import com.example.wk.pojo.MiningParam;
+import com.example.wk.pojo.dto.Earnings;
 import com.example.wk.service.IWkUnderwayService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,14 +69,19 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
 
     @Transactional
     @Override
-    public String findEarnings() {
+    public Earnings findEarnings() {
         WkUser u = AdminSession.getInstance().admin();
         WkUnderway underway = underwayMapper.selectOne(Wrappers.lambdaQuery(WkUnderway.class)
                 .eq(WkUnderway::getId, u.getId())
                 .eq(WkUnderway::getStatus, 1));
+        if (null == underway)
+            return null;
         underway.setEarnings(underway.getMoneyQuantity().multiply(this.earningsCoefficient(underway.getStartDate(), LocalDateTime.now())));
         underwayMapper.updateById(underway);
-        return underway.getEarnings().setScale(4, RoundingMode.HALF_UP).toPlainString();
+        Earnings earnings = new Earnings();
+        earnings.setEarnings(underway.getEarnings().setScale(4, RoundingMode.HALF_UP).toPlainString());
+        earnings.setMoneyQuantity(underway.getMoneyQuantity().setScale(4, RoundingMode.HALF_UP).toPlainString());
+        return earnings;
     }
 
     private void stopUnderwayById(Integer id) {
