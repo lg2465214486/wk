@@ -13,6 +13,7 @@ import com.example.wk.mapper.WkUserMapper;
 import com.example.wk.mapper.WkWithdrawMapper;
 import com.example.wk.pojo.LoginParam;
 import com.example.wk.pojo.ListParam;
+import com.example.wk.pojo.MoneyOptionParam;
 import com.example.wk.pojo.UserParam;
 import com.example.wk.pojo.dto.DealDetail;
 import com.example.wk.pojo.dto.UserInfo;
@@ -115,6 +116,18 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
 
         userMapper.updateById(user);
         return new JsonResult("success");
+    }
+
+    @Transactional
+    @Override
+    public String topUp(MoneyOptionParam param) {
+        return null;
+    }
+
+    @Transactional
+    @Override
+    public String withdraw(MoneyOptionParam param) {
+        return null;
     }
 
     @Override
