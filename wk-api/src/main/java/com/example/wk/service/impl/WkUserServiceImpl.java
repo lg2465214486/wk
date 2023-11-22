@@ -176,13 +176,13 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         }
         switch (option[1]) {
             case "ustd":
-                user.setUstd(user.getUstd().add(new BigDecimal(param.getNum())).subtract(new BigDecimal(coefficient)));
+                user.setUstd(user.getUstd().add(new BigDecimal(param.getNum()).multiply(new BigDecimal(coefficient)).setScale(4, RoundingMode.HALF_UP)));
                 break;
             case "eth":
-                user.setEth(user.getEth().add(new BigDecimal(param.getNum())).subtract(new BigDecimal(coefficient)));
+                user.setEth(user.getEth().add(new BigDecimal(param.getNum()).multiply(new BigDecimal(coefficient)).setScale(4, RoundingMode.HALF_UP)));
                 break;
             case "btc":
-                user.setBtc(user.getBtc().add(new BigDecimal(param.getNum())).subtract(new BigDecimal(coefficient)));
+                user.setBtc(user.getBtc().add(new BigDecimal(param.getNum()).multiply(new BigDecimal(coefficient)).setScale(4, RoundingMode.HALF_UP)));
                 break;
             default: throw new Exception("error");
         }
