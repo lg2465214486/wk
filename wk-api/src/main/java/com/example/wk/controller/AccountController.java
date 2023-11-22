@@ -2,6 +2,7 @@ package com.example.wk.controller;
 
 
 import com.example.wk.config.JsonResult;
+import com.example.wk.pojo.ConversionParam;
 import com.example.wk.pojo.MoneyOptionParam;
 import com.example.wk.service.IWkUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +31,14 @@ public class AccountController {
     @PostMapping("/withdraw")
     public JsonResult withdraw(@RequestBody MoneyOptionParam param) {
         return new JsonResult(userService.withdraw(param));
+    }
+
+    /**
+     * 闪兑
+     * @return
+     */
+    @PostMapping("/conversion")
+    public JsonResult conversion(@RequestBody ConversionParam param) throws Exception{
+        return new JsonResult(userService.conversion(param));
     }
 }

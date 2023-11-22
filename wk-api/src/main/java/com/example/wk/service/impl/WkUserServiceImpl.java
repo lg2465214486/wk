@@ -11,12 +11,10 @@ import com.example.wk.entity.WkWithdraw;
 import com.example.wk.mapper.WkTopUpMapper;
 import com.example.wk.mapper.WkUserMapper;
 import com.example.wk.mapper.WkWithdrawMapper;
-import com.example.wk.pojo.LoginParam;
-import com.example.wk.pojo.ListParam;
-import com.example.wk.pojo.MoneyOptionParam;
-import com.example.wk.pojo.UserParam;
+import com.example.wk.pojo.*;
 import com.example.wk.pojo.dto.DealDetail;
 import com.example.wk.pojo.dto.UserInfo;
+import com.example.wk.service.CommonService;
 import com.example.wk.service.IWkUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.wk.util.MyDateUtils;
@@ -49,6 +47,8 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
     private WkTopUpMapper topUpMapper;
     @Autowired
     private WkWithdrawMapper withdrawMapper;
+    @Autowired
+    private CommonService commonService;
 
     @Override
     public JsonResult userLogin(LoginParam login) {
@@ -146,6 +146,48 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         withdraw.setCreatedDate(LocalDateTime.now());
         withdraw.setUpdatedDate(LocalDateTime.now());
         withdrawMapper.insert(withdraw);
+        return "success";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public String conversion(ConversionParam param) throws Exception {
+        AdminSession session = AdminSession.getInstance();
+        WkUser user = userMapper.selectById(session.admin().getId());
+        String[] option = param.getOption().split("2");
+        String coefficient = commonService.getValueByKey(param.getOption());
+        switch (option[0]) {
+            case "ustd":
+                if (user.getUstd().compareTo(new BigDecimal(param.getNum())) < 0)
+                    throw new Exception("not sufficient funds");
+                user.setUstd(user.getUstd().subtract(new BigDecimal(param.getNum())));
+                break;
+            case "eth":
+                if (user.getEth().compareTo(new BigDecimal(param.getNum())) < 0)
+                    throw new Exception("not sufficient funds");
+                user.setEth(user.getEth().subtract(new BigDecimal(param.getNum())));
+                break;
+            case "btc":
+                if (user.getBtc().compareTo(new BigDecimal(param.getNum())) < 0)
+                    throw new Exception("not sufficient funds");
+                user.setBtc(user.getBtc().subtract(new BigDecimal(param.getNum())));
+                break;
+            default: throw new Exception("error");
+        }
+        switch (option[1]) {
+            case "ustd":
+                user.setUstd(user.getUstd().add(new BigDecimal(param.getNum())).subtract(new BigDecimal(coefficient)));
+                break;
+            case "eth":
+                user.setEth(user.getEth().add(new BigDecimal(param.getNum())).subtract(new BigDecimal(coefficient)));
+                break;
+            case "btc":
+                user.setBtc(user.getBtc().add(new BigDecimal(param.getNum())).subtract(new BigDecimal(coefficient)));
+                break;
+            default: throw new Exception("error");
+        }
+        userMapper.updateById(user);
+        session.updateAdmin(user);
         return "success";
     }
 

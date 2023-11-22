@@ -71,4 +71,12 @@ public class AdminSession {
         return "logout success";
     }
 
+    public String updateAdmin(WkUser user) {
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                    .getRequest();
+            String token = request.getHeader("X-Token");
+            user.setPwd(null);
+            redisTemplate.opsForValue().set(SESSION_KEY + token, user, 30, TimeUnit.MINUTES);
+            return token;
+    }
 }
