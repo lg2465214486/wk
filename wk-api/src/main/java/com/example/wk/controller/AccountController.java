@@ -29,7 +29,7 @@ public class AccountController {
      * @return
      */
     @PostMapping("/withdraw")
-    public JsonResult withdraw(@RequestBody MoneyOptionParam param) {
+    public JsonResult withdraw(@RequestBody MoneyOptionParam param) throws Exception {
         return new JsonResult(userService.withdraw(param));
     }
 

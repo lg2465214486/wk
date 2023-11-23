@@ -14,12 +14,13 @@ public class DealDetail implements Comparable<DealDetail>{
     String time;
     String type; // 1:充值 0:提现
     String amount;
+    String trc20;
     String status;
 
     LocalDateTime localDateTime;
 
     @Override
     public int compareTo(DealDetail d) {
-        return this.localDateTime.compareTo(d.getLocalDateTime());
+        return d.getLocalDateTime().compareTo(this.localDateTime);
     }
 }

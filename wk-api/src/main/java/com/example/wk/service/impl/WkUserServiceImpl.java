@@ -137,15 +137,21 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public String withdraw(MoneyOptionParam param) {
+    public String withdraw(MoneyOptionParam param) throws Exception {
         WkUser u = userMapper.selectByUuid(AdminSession.getInstance().admin().getUuid());
+        if (u.getUstd().compareTo(new BigDecimal(param.getAmount())) < 0)
+            throw new Exception("Insufficient account balance");
         WkWithdraw withdraw = new WkWithdraw();
         withdraw.setUserId(u.getId());
         withdraw.setSales(new BigDecimal(param.getAmount()));
         withdraw.setStatus(1);
+        withdraw.setTrc20Address(param.getTRC20());
         withdraw.setCreatedDate(LocalDateTime.now());
         withdraw.setUpdatedDate(LocalDateTime.now());
         withdrawMapper.insert(withdraw);
+        WkUser wkUser = userMapper.selectById(withdraw.getUserId());
+        wkUser.setUstd(wkUser.getUstd().subtract(withdraw.getSales()));
+        userMapper.updateById(wkUser);
         return "success";
     }
 
@@ -155,7 +161,14 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         AdminSession session = AdminSession.getInstance();
         WkUser user = userMapper.selectById(session.admin().getId());
         String[] option = param.getOption().split("2");
-        String coefficient = commonService.getValueByKey(param.getOption());
+        BigDecimal btc;
+        BigDecimal eth;
+        try {
+            btc = new BigDecimal(commonService.getValueByKey("btc"));
+            eth = new BigDecimal(commonService.getValueByKey("eth"));
+        }catch (Exception e) {
+            throw new Exception("input not number !");
+        }
         switch (option[0]) {
             case "ustd":
                 if (user.getUstd().compareTo(new BigDecimal(param.getNum())) < 0)
@@ -176,13 +189,16 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         }
         switch (option[1]) {
             case "ustd":
-                user.setUstd(user.getUstd().add(new BigDecimal(param.getNum()).multiply(new BigDecimal(coefficient)).setScale(4, RoundingMode.HALF_UP)));
+                if ("eth".equals(option[0]))
+                    user.setUstd(user.getUstd().add(new BigDecimal(param.getNum()).multiply(eth).setScale(4, RoundingMode.HALF_UP)));
+                if ("btc".equals(option[0]))
+                    user.setUstd(user.getUstd().add(new BigDecimal(param.getNum()).multiply(btc).setScale(4, RoundingMode.HALF_UP)));
                 break;
             case "eth":
-                user.setEth(user.getEth().add(new BigDecimal(param.getNum()).multiply(new BigDecimal(coefficient)).setScale(4, RoundingMode.HALF_UP)));
+                user.setEth(user.getEth().add(new BigDecimal(param.getNum()).divide(eth, 4, BigDecimal.ROUND_DOWN)));
                 break;
             case "btc":
-                user.setBtc(user.getBtc().add(new BigDecimal(param.getNum()).multiply(new BigDecimal(coefficient)).setScale(4, RoundingMode.HALF_UP)));
+                user.setBtc(user.getEth().add(new BigDecimal(param.getNum()).divide(btc, 4, BigDecimal.ROUND_DOWN)));
                 break;
             default: throw new Exception("error");
         }
@@ -203,18 +219,20 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
             DealDetail detail = new DealDetail();
             if (o instanceof WkTopUp) {
                 WkTopUp v = (WkTopUp) o;
-                detail.setType("充值");
+                detail.setType("1");
                 detail.setAmount(v.getSales().setScale(4, RoundingMode.HALF_UP).toPlainString());
+                detail.setTrc20("");
                 detail.setTime(MyDateUtils.dateTimeFormat(v.getCreatedDate()));
                 detail.setLocalDateTime(v.getCreatedDate());
-                detail.setStatus(v.getStatus() == 1? "待审核":(v.getStatus() == 2? "通过":"不通过"));
+                detail.setStatus(v.getStatus()+"");
             } else {
                 WkWithdraw v = (WkWithdraw) o;
-                detail.setType("提现");
+                detail.setType("2");
                 detail.setAmount(v.getSales().setScale(4, RoundingMode.HALF_UP).toPlainString());
                 detail.setTime(MyDateUtils.dateTimeFormat(v.getCreatedDate()));
                 detail.setLocalDateTime(v.getCreatedDate());
-                detail.setStatus(v.getStatus() == 1? "待审核":(v.getStatus() == 2? "通过":"不通过"));
+                detail.setTrc20(v.getTrc20Address());
+                detail.setStatus(v.getStatus()+"");
             }
             details.add(detail);
         }

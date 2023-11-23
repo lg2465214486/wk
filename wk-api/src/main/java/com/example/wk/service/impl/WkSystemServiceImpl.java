@@ -3,9 +3,11 @@ package com.example.wk.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.example.wk.entity.WkSystem;
 import com.example.wk.entity.WkTopUp;
+import com.example.wk.entity.WkUser;
 import com.example.wk.entity.WkWithdraw;
 import com.example.wk.mapper.WkSystemMapper;
 import com.example.wk.mapper.WkTopUpMapper;
+import com.example.wk.mapper.WkUserMapper;
 import com.example.wk.mapper.WkWithdrawMapper;
 import com.example.wk.pojo.ExamineParam;
 import com.example.wk.service.IWkSystemService;
@@ -33,6 +35,8 @@ public class WkSystemServiceImpl extends ServiceImpl<WkSystemMapper, WkSystem> i
     private WkTopUpMapper topUpMapper;
     @Autowired
     private WkWithdrawMapper withdrawMapper;
+    @Autowired
+    private WkUserMapper userMapper;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -67,6 +71,10 @@ public class WkSystemServiceImpl extends ServiceImpl<WkSystemMapper, WkSystem> i
         wkWithdraw.setUpdatedDate(LocalDateTime.now());
         wkWithdraw.setStatus(param.getStatus());
         withdrawMapper.updateById(wkWithdraw);
+        WkUser wkUser = userMapper.selectById(wkWithdraw.getUserId());
+        if (param.getStatus() == 3)
+            wkUser.setUstd(wkUser.getUstd().add(wkWithdraw.getSales()));
+            userMapper.updateById(wkUser);
         return "success";
     }
 }
