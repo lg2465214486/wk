@@ -34,6 +34,14 @@ public class AdminController {
     public JsonResult userList(ListParam param) {
         return new JsonResult(userService.findUserList(param));
     }
+    /**
+     * 用户列表
+     * @return
+     */
+    @GetMapping("/user/stop")
+    public JsonResult userStatus(String uuid, int isStop) {
+        return new JsonResult(userService.stopOrOpenUser(uuid, isStop));
+    }
 
     /**
      * 充值列表

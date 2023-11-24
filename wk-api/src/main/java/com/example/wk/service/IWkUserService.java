@@ -38,4 +38,6 @@ public interface IWkUserService extends IService<WkUser> {
     String withdraw(MoneyOptionParam param) throws Exception;
 
     String conversion(ConversionParam param) throws Exception;
+
+    String stopOrOpenUser(String uuid, int isStop);
 }

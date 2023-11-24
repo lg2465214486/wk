@@ -214,6 +214,14 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
     }
 
     @Override
+    public String stopOrOpenUser(String uuid, int isStop) {
+        WkUser u = userMapper.selectOne(Wrappers.lambdaQuery(WkUser.class).eq(WkUser::getUuid, uuid));
+        u.setIsStop(isStop == 1);
+        userMapper.updateById(u);
+        return null;
+    }
+
+    @Override
     public List<DealDetail> getTransactionRecordById(Integer id) {
         List<DealDetail> details = new ArrayList<>();
         List<Object> dealList = new ArrayList<>();
