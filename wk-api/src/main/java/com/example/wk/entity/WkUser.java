@@ -76,5 +76,5 @@ public class WkUser implements Serializable {
      */
     private Boolean isStop;
 
-
+    private String token;
 }

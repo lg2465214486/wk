@@ -35,7 +35,7 @@ public class AdminController {
         return new JsonResult(userService.findUserList(param));
     }
     /**
-     * 用户列表
+     * 禁用
      * @return
      */
     @GetMapping("/user/stop")

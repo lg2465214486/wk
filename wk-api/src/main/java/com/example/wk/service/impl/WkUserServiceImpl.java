@@ -1,5 +1,6 @@
 package com.example.wk.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -58,6 +59,8 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         if (wkUser.getIsStop())
             return new JsonResult(500, "Username is stop.");
         String token = AdminSession.getInstance().setAdmin(wkUser);
+        wkUser.setToken(token);
+        userMapper.updateById(wkUser);
         return new JsonResult(token);
     }
 
@@ -71,6 +74,7 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
             wrapper.like(WkUser::getUserEmail, param.getLastKeywords()).or().like(WkUser::getUserName, param.getLastKeywords());
         if (null != param.getFirstKeywords())
             wrapper.and(i -> i.like(WkUser::getUuid, param.getFirstKeywords()));
+        wrapper.orderByDesc(WkUser::getCreatedDate);
         Page<WkUser> wkUserPage = userMapper.selectPage(page, wrapper);
         return wkUserPage;
     }
@@ -110,24 +114,25 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
     @Override
     public JsonResult editUser(UserParam param) {
         WkUser user = userMapper.selectOne(Wrappers.lambdaQuery(WkUser.class).eq(WkUser::getUuid, param.getUuid()));
-        user.setUserName(param.getUserName());
-        user.setUserEmail(param.getUserEmail());
-        user.setPhone(param.getPhone());
-        user.setPwd(param.getPwd());
-        user.setIsStop(param.getIsStop());
+        //user.setUserName(param.getUserName());
+        //user.setUserEmail(param.getUserEmail());
+        //user.setPhone(param.getPhone());
+        //user.setPwd(param.getPwd());
 
         user.setEth(new BigDecimal(param.getEth()));
         user.setBtc(new BigDecimal(param.getBtc()));
         user.setUstd(new BigDecimal(param.getUstd()));
 
         userMapper.updateById(user);
+        if (StrUtil.isNotEmpty(user.getToken()))
+            AdminSession.getInstance().updateAdmin(user.getToken(),user);
         return new JsonResult("success");
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String topUp(MoneyOptionParam param) {
-        WkUser u = userMapper.selectByUuid(AdminSession.getInstance().admin().getUuid());
+        WkUser u = userMapper.selectByUuid(param.getUuid());
         WkTopUp topUp = new WkTopUp();
         topUp.setUserId(u.getId());
         topUp.setSales(new BigDecimal(param.getAmount()));
@@ -137,7 +142,8 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         topUpMapper.insert(topUp);
         u.setUstd(u.getUstd().add(new BigDecimal(param.getAmount())));
         userMapper.updateById(u);
-        AdminSession.getInstance().updateAdmin(u);
+        if (StrUtil.isNotEmpty(u.getToken()))
+            AdminSession.getInstance().updateAdmin(u.getToken(),u);
         return "success";
     }
 
@@ -151,7 +157,7 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         withdraw.setUserId(u.getId());
         withdraw.setSales(new BigDecimal(param.getAmount()));
         withdraw.setStatus(1);
-        withdraw.setTrc20Address(param.getTRC20());
+        withdraw.setTrc20Address(param.getTrc20());
         withdraw.setCreatedDate(LocalDateTime.now());
         withdraw.setUpdatedDate(LocalDateTime.now());
         withdrawMapper.insert(withdraw);

@@ -10,6 +10,6 @@ import lombok.Data;
 @Data
 public class MoneyOptionParam {
     String uuid;
-    String TRC20;
+    String trc20;
     String amount;
 }

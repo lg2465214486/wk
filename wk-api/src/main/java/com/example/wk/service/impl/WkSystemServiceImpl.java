@@ -1,6 +1,8 @@
 package com.example.wk.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.example.wk.config.AdminSession;
 import com.example.wk.entity.WkSystem;
 import com.example.wk.entity.WkTopUp;
 import com.example.wk.entity.WkUser;
@@ -75,6 +77,8 @@ public class WkSystemServiceImpl extends ServiceImpl<WkSystemMapper, WkSystem> i
         if (param.getStatus() == 3)
             wkUser.setUstd(wkUser.getUstd().add(wkWithdraw.getSales()));
             userMapper.updateById(wkUser);
+        if (StrUtil.isNotEmpty(wkUser.getToken()))
+            AdminSession.getInstance().updateAdmin(wkUser.getToken(),wkUser);
         return "success";
     }
 }

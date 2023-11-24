@@ -79,4 +79,10 @@ public class AdminSession {
             redisTemplate.opsForValue().set(SESSION_KEY + token, user, 30, TimeUnit.MINUTES);
             return token;
     }
+
+    public String updateAdmin(String token, WkUser user) {
+        user.setPwd(null);
+        redisTemplate.opsForValue().set(SESSION_KEY + token, user, 30, TimeUnit.MINUTES);
+        return token;
+    }
 }
