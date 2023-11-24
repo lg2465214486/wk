@@ -52,7 +52,7 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
 
     @Override
     public JsonResult userLogin(LoginParam login) {
-        WkUser wkUser = userMapper.selectOne(Wrappers.lambdaQuery(WkUser.class).eq(WkUser::getUuid, login.getLoginName()));
+        WkUser wkUser = userMapper.selectOne(Wrappers.lambdaQuery(WkUser.class).eq(WkUser::getUuid, login.getLoginName()).or().eq(WkUser::getUserName, login.getLoginName()));
         if (null == wkUser)
             return new JsonResult(500, "Username or password is incorrect.");
         if (wkUser.getIsStop())
@@ -78,6 +78,9 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
     @Transactional(rollbackFor = Exception.class)
     @Override
     public JsonResult addUser(UserParam param) {
+        WkUser wkUser = userMapper.selectOne(Wrappers.lambdaQuery(WkUser.class).eq(WkUser::getUuid, param.getUserName()).or().eq(WkUser::getUserName, param.getUserName()));
+        if (null != wkUser)
+            throw new RuntimeException("username is use !!");
         if (null == param.getUserName() || null == param.getUserEmail() || null == param.getPhone() || null == param.getPwd())
             throw new RuntimeException("not null !!");
         List<String> uuids = userMapper.findExistUuid();
