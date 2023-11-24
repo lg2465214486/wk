@@ -1,0 +1,5 @@
+html, body {
+  height: 100%; /* 设置html和body元素的高度为100% */
+  margin: 0; /* 去掉默认的外边距 */
+  padding: 0; /* 去掉默认的内边距 */
+}
