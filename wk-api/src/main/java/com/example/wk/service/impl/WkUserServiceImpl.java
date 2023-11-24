@@ -131,10 +131,13 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         WkTopUp topUp = new WkTopUp();
         topUp.setUserId(u.getId());
         topUp.setSales(new BigDecimal(param.getAmount()));
-        topUp.setStatus(1);
+        topUp.setStatus(2);
         topUp.setCreatedDate(LocalDateTime.now());
         topUp.setUpdatedDate(LocalDateTime.now());
         topUpMapper.insert(topUp);
+        u.setUstd(u.getUstd().add(new BigDecimal(param.getAmount())));
+        userMapper.updateById(u);
+        AdminSession.getInstance().updateAdmin(u);
         return "success";
     }
 
