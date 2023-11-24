@@ -218,7 +218,7 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         WkUser u = userMapper.selectOne(Wrappers.lambdaQuery(WkUser.class).eq(WkUser::getUuid, uuid));
         u.setIsStop(isStop == 1);
         userMapper.updateById(u);
-        return null;
+        return "success";
     }
 
     @Override
