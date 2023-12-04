@@ -6,7 +6,7 @@
       <table>
         <tr>
           <td>
-            <el-input placeholder="uuid" v-model="listJson.firstKeywords" clearable></el-input>
+            <el-input placeholder="私钥" v-model="listJson.firstKeywords" clearable></el-input>
           </td>
           <td>
             <el-input placeholder="账户" v-model="listJson.lastKeywords" clearable></el-input>
@@ -17,13 +17,13 @@
         </tr>
       </table>
       <el-table :data="withList" border style="width: 100%">
-        <el-table-column prop="date" label="uuid" width="auto">
+        <el-table-column prop="date" label="私钥" width="auto">
           <template #default="scope">{{ scope.row.uuid }}</template>
         </el-table-column>
         <el-table-column prop="name" label="提现金额" width="auto">
           <template #default="scope">{{ scope.row.sales }}</template>
         </el-table-column>
-        <el-table-column prop="date" label="提现TRC20地址" width="auto">
+        <el-table-column prop="date" label="提现ERC20地址" width="auto">
           <template #default="scope">{{ scope.row.trc20Address }}</template>
         </el-table-column>
         <el-table-column prop="date" label="提交时间" width="auto">

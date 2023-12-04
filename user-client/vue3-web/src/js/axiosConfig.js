@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // const baseURL = 'http://127.0.0.1:8081'; 
 // const baseURL = 'http://192.168.1.15:8081'; 
-const baseURL = 'http://216.224.126.149/api'; 
+const baseURL = 'https://copisp.top/api';
 
 const instance = axios.create({
   baseURL,
@@ -14,7 +14,7 @@ const instance = axios.create({
 
 // GET 方法
 export const get = (url, params = {}) => {
-  return instance.get(url, {params, headers: {'X-Token': sessionStorage.getItem('userToken')}});
+  return instance.get(url, {params, headers: {'X-Token': sessionStorage.getItem('adminUserToken')}});
 };
 
 // POST 方法
@@ -22,7 +22,7 @@ export const post = (url, data = {}) => {
   return instance.post(url, data,{
     headers: {
         'Content-Type': 'application/json',
-        'X-Token': sessionStorage.getItem('userToken')
+        'X-Token': sessionStorage.getItem('adminUserToken')
       }
   });
 };

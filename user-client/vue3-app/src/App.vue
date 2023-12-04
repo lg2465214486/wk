@@ -3,7 +3,7 @@ import Navbar from './components/Navbar.vue'
 </script>
 
 <template>
-  <div>
+  <div style="font-family: '微软雅黑';">
     <Navbar/>
     <router-view></router-view>
   </div>

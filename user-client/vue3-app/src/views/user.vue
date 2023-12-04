@@ -2,81 +2,111 @@
   <div class="user-body">
     <div class="user-header">
       <img style="width:50px;" src="../assets/asijfofuha1231j.png" />&nbsp;
-      <h1>我的账户</h1>
+      <h1>{{$t('message.user_wdzh')}}</h1>
     </div>
-    <hr />
+    
     
     <div v-if="userToken != null">
-      <div style="display: flex;align-items: center;justify-content: center;">
+      <div style="display: flex;align-items: center;justify-content: center;font-family: '微软雅黑';font-size: 1em;font-weight: 500;">
         <el-icon>
           <User></User>
         </el-icon>
-        &nbsp;ID：{{ user.userName }}
+        &nbsp;{{$t('message.user_yhm')}}：{{ user.userName }}
+      </div>
+      <br />
+      <div style="font-family: '微软雅黑';font-size: 1em;font-weight: 400;">
+        <table style="text-align: left;">
+          <tr>
+            <td style="font-family: '幼圆';font-size: 1em;font-weight: 600;">{{$t('message.user_zhzc')}}&nbsp;&nbsp;&nbsp;</td>
+          </tr>
+          <tr>
+            <td>USTD≈</td>
+            <td>{{ user.ustd }}</td>
+          </tr>
+          <tr>
+            <td>ETH≈</td>
+            <td>{{ user.eth }}</td>
+          </tr>
+          <tr>
+            <td>BTC≈</td>
+            <td>{{ user.btc }}</td>
+          </tr>
+        </table>
       </div>
       <br />
       <div>
-        (USTD)余额：{{ user.ustd }}
-        <br />
-        (ETH)余额：{{ user.eth }}
-        <br />
-        (BTC)余额：{{ user.btc }}
-        <br />
-      </div>
-      <br />
-      <div>
-        <p><el-button @click="dialogVisible = true" style="width: 80%;">充币</el-button></p>
-        <p><el-button @click="dialogVisible2 = true" style="width: 80%;">提币</el-button></p>
-        <p><el-button @click="orderList" style="width: 80%;">交易记录</el-button></p>
-        <p><el-button @click="dialogVisible4 = true" style="width: 80%;">闪兑</el-button></p>
-        <p><el-button @click="dialogVisible3 = true" style="width: 80%;">账户私钥</el-button></p>
-        <p><el-button @click="logout" style="width: 80%;">注销</el-button></p>
+        <p><el-button @click="dialogVisible = true" style="width: 100%;" size="large">{{$t('message.user_cb')}}</el-button></p>
+        <p><el-button @click="dialogVisible2 = true" style="width: 100%;" size="large">{{$t('message.user_tb')}}</el-button></p>
+        <p><el-button @click="orderList" style="width: 100%;" size="large">{{$t('message.user_jyjl')}}</el-button></p>
+        <p><el-button @click="dialogVisible4 = true" style="width: 100%;" size="large">{{$t('message.user_sd')}}</el-button></p>
+        <p><el-button @click="dialogVisible3 = true" style="width: 100%;" size="large">{{$t('message.user_zhsy')}}</el-button></p>
+        <p><el-button @click="dialogVisible6 = true" style="width: 100%;" size="large">{{$t('message.user_bzzx')}}</el-button></p>
+        <!-- <p><el-button style="width: 100%;" size="large">语言</el-button></p> -->
+        <p><el-button @click="logout" style="width: 100%;" size="large">{{$t('message.user_zx')}}</el-button></p>
       </div>
     </div>
     <div v-else>
-    <span>暂未登录，请登录</span>
-    <el-tabs class="demo-tabs" v-model="activeName">
-      <el-tab-pane label="登录" name="first">
-        <table>
+    <img style="width: 80%;" src="../assets/logo2/logo_transparent.png" />
+    <el-tabs class="demo-tabs" v-model="activeName"  @tab-change="secClk" stretch>
+      <el-tab-pane :label="$t('message.user_zhdl')" name="first" style="font-size: 12px;">
+        <table style="width:100%">
           <tr>
-            <td>ID/私钥：</td>
+            <td>{{$t('message.user_yhm')}}：</td>
             <td>
               <el-input v-model="loginJson.loginName"></el-input>
             </td>
           </tr>
           <tr>
-            <td>密码：</td>
+            <td>{{$t('message.user_pwd')}}：</td>
             <td>
               <el-input type="password" v-model="loginJson.loginPassword"></el-input>
             </td>
           </tr>
+          <tr><td></td><td><br/><br/><br/></td></tr>
           <tr>
-            <td>
-              <el-button type="primary" @click="login">登录</el-button>
+            <td colspan="2">
             </td>
           </tr>
         </table>
+        <el-button type="primary" @click="login" style="width: 100px;" size="large">{{$t('message.user_dl')}}</el-button>
       </el-tab-pane>
-      <el-tab-pane label="注册" name="id_login">
-        <table>
+      <el-tab-pane :label="$t('message.user_sydl')" name="sec" style="font-size: 12px;">
+        <table style="width:100%">
           <tr>
-            <td>ID：</td>
+            <td>&nbsp;&nbsp;&nbsp;{{$t('message.user_sec')}}：</td>
             <td>
-              <el-input v-model="register.userName" placeholder="6位以上字符"></el-input>
+              <el-input v-model="loginJson.loginName"></el-input>
+            </td>
+          </tr>
+          <tr><td></td><td><br/><br/><br/><br/></td></tr>
+          <tr>
+            <td colspan="2">
+            </td>
+          </tr>
+        </table>
+        <el-button type="primary" @click="login" style="width: 100px;" size="large">{{$t('message.user_dl')}}</el-button>
+      </el-tab-pane>
+      <el-tab-pane :label="$t('message.user_cjqb')" name="id_login" style="text-align: center;font-size: 12px;">
+        <table style="width:100%">
+          <tr>
+            <td>{{$t('message.user_yhm')}}：</td>
+            <td>
+              <el-input v-model="register.userName" :placeholder="$t('message.user_6l')"></el-input>
             </td>
           </tr>
           <tr>
-            <td>密码：</td>
+            <td>{{$t('message.user_pwd')}}：</td>
             <td>
-              <el-input type="password" v-model="register.pwd" placeholder="8位以上字符"></el-input><el-text v-if="register.pwd.length > 0 && register.pwd.length < 8" size="small" type="danger">密码长度不足</el-text>
+              <el-input type="password" v-model="register.pwd" :placeholder="$t('message.user_8l')"></el-input><el-text v-if="register.pwd.length > 0 && register.pwd.length < 8" size="small" type="danger">{{$t('message.user_mmts1')}}</el-text>
             </td>
           </tr>
           <tr>
-            <td>确认密码：</td>
+            <td>{{$t('message.user_qrpwd')}}：</td>
             <td>
-              <el-input type="password" v-model="register.pwd2" placeholder="8位以上字符"></el-input><el-text v-if="register.pwd2.length > 0 && register.pwd != register.pwd2" size="small" type="danger">密码不一致</el-text>
+              <el-input type="password" v-model="register.pwd2" :placeholder="$t('message.user_8l')"></el-input><el-text v-if="register.pwd2.length > 0 && register.pwd != register.pwd2" size="small" type="danger">{{$t('message.user_mmts2')}}</el-text>
             </td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td>手机号码：</td>
             <td>
               <el-input v-model="register.phone"></el-input>
@@ -87,14 +117,15 @@
             <td>
               <el-input v-model="register.userEmail"></el-input>
             </td>
-          </tr>
+          </tr> -->
+          <tr><td></td><td><br/><br/><br/></td></tr>
           <tr>
-            <td>
-              <el-button @click="regist" v-if="register.pwd.length >= 8 && register.pwd2.length >= 8 && register.pwd == register.pwd2 && register.userName.length >= 6" type="primary">注册</el-button>
-              <el-button v-else type="primary" disabled>注册</el-button>
+            <td colspan="2">
             </td>
           </tr>
         </table>
+        <el-button @click="regist" v-if="register.pwd.length >= 8 && register.pwd2.length >= 8 && register.pwd == register.pwd2 && register.userName.length >= 6" style="width: 100px;" size="large" type="primary">{{$t('message.user_zc')}}</el-button>
+        <el-button v-else type="primary" style="width: 100px;" size="large" disabled>{{$t('message.user_zc')}}</el-button>
       </el-tab-pane>
     </el-tabs>
     </div>
@@ -105,66 +136,140 @@
 
 
 
-    <el-dialog v-model="dialogVisible" title="充币" width="80%">
-        <div>
-          <table>
+    <el-dialog v-model="dialogVisible" :title="$t('message.user_cb')" width="80%">
+      <el-tabs v-model="cbActive" class="demo-tabs" stretch>
+        <el-tab-pane label="USDT" name="usdt">
+          <div>
+          <table style="text-align: center;width:100%">
             <tr>
-              <td>联系客服:</td>
               <td>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <!-- <el-input v-model="trc20" style="width: auto;" id="myInputtrc20" readonly></el-input> -->
               </td>
               <td>
-                <!-- <el-button @click="copytrc20">复制</el-button> -->
-                <img style="width:100px;" src="../assets/qrcode.png" />
+                <img style="width:170px;" :src="qrCode" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+              </td>
+              <td>
+                <span id="phone">{{phone}}</span>
+                &nbsp;&nbsp;<el-button type="primary" @click="copyPhone()">{{$t('message.user_fz')}}</el-button>
               </td>
             </tr>
           </table>
         </div>
-    </el-dialog>
-    <el-dialog v-model="dialogVisible2" title="提币" width="80%">
-      <template #footer>
-        <div>
-          <table>
+        </el-tab-pane>
+        <el-tab-pane label="BTC" name="btc">
+          <div>
+          <table style="text-align: center;width:100%">
             <tr>
-              <td>TRC20:</td>
+              <td>
+              </td>
+              <td>
+                <img style="width:170px;" :src="btcQrCode" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+              </td>
+              <td>
+                <span id="btcPhone">{{btcPhone}}</span>
+                &nbsp;&nbsp;<el-button type="primary" @click="copyBtcPhone()">{{$t('message.user_fz')}}</el-button>
+              </td>
+            </tr>
+          </table>
+        </div>
+        </el-tab-pane>
+        <el-tab-pane label="ETH" name="eth">
+          <div>
+          <table style="text-align: center;width:100%">
+            <tr>
+              <td>
+              </td>
+              <td>
+                <img style="width:170px;" :src="ethQrCode" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+              </td>
+              <td>
+                <span id="ethPhone">{{ethPhone}}</span>
+                &nbsp;&nbsp;<el-button type="primary" @click="copyEthPhone()">{{$t('message.user_fz')}}</el-button>
+              </td>
+            </tr>
+          </table>
+        </div>
+        </el-tab-pane>
+      </el-tabs>
+    </el-dialog>
+    <el-dialog v-model="dialogVisible2" :title="$t('message.user_tb')" width="80%">
+      <div style="width:100%">
+          <table style="width:100%">
+            <tr>
+              <td>{{$t('message.user_tqdz')}}：</td>
               <td>
                 <el-input v-model="myTrc20"></el-input>
               </td>
             </tr>
             <tr>
-              <td>金额：</td>
+              <td>{{$t('message.user_tqje')}}：</td>
               <td>
                 <el-input v-model="myAmount"></el-input>
               </td>
             </tr>
           </table>
         </div>
+      <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogVisible2 = false">退出</el-button>
-          <el-button type="primary" @click="tixian">提交</el-button>
+          <el-button @click="dialogVisible2 = false">{{$t('message.user_tc')}}</el-button>
+          <el-button type="primary" @click="tixian">{{$t('message.user_tj')}}</el-button>
         </span>
       </template>
     </el-dialog>
-    <el-dialog v-model="dialogVisible3" title="私钥" width="80%">
-      <template #footer>
-        <div>
+
+    <el-dialog v-model="dialogVisible3" :title="$t('message.user_sec')" width="80%">
+        <div style="80%">
           <table>
             <tr>
-              <td>您的私钥是:</td>
-              <td>{{user.uuid}}</td>
+              <td><span>{{$t('message.user_sec')}}:</span></td>
+              <td><span id="seckey" style="font-size: 10px;">{{user.uuid}}</span></td>
+            </tr>
+            <tr>
+              <td colspan="2"><el-button @click="copySecKey" type="primary" size="small">{{$t('message.user_fz')}}</el-button></td>
             </tr>
           </table>
         </div>
+        <br/>
+        <br/>
+        <br/>
+        <div style="text-align: left;font-family: '微软雅黑';font-size: 0.80em;font-weight: 500;">
+          <table>
+            <tr>
+              <td>{{$t('message.user_p1')}}</td>
+            </tr>
+            <tr>
+              <td>{{$t('message.user_p2')}}</td>
+            </tr>
+            <tr>
+              <td>{{$t('message.user_p3')}}</td>
+            </tr>
+            <tr>
+              <td>{{$t('message.user_p4')}}</td>
+            </tr>
+          </table>
+        </div>
+      <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogVisible3 = false">关闭</el-button>
+          <el-button @click="dialogVisible3 = false">{{$t('message.user_tc')}}</el-button>
         </span>
       </template>
     </el-dialog>
-    <el-dialog v-model="dialogVisible4" title="闪兑" width="80%">
-      <el-tabs v-model="shanduiActive" class="demo-tabs">
+
+    <el-dialog v-model="dialogVisible4" :title="$t('message.user_sd')" width="80%">
+      <el-tabs v-model="shanduiActive" class="demo-tabs" stretch>
         <el-tab-pane label="BTC" name="btc">
-          <table>
+          <table style="width:100%">
             <tr>
                 <td>{{shanduiActive_btc_self.toUpperCase()}}</td>
                 <td><el-input v-model="btcNum1" @input="btcConver()"></el-input></td>
@@ -179,12 +284,14 @@
             </tr>
             <tr>
                 <td></td>
-                <td><el-button @click="btcBtnClk">兑换</el-button></td>
+                <td></td>
             </tr>
           </table>
+          <br/>
+          <el-button @click="btcBtnClk" type="primary">{{$t('message.user_dh')}}</el-button>
         </el-tab-pane>
         <el-tab-pane label="ETH" name="eth">
-          <table>
+          <table style="width:100%">
             <tr>
                 <td>{{shanduiActive_eth_self.toUpperCase()}}</td>
                 <td><el-input v-model="ethNum1" @input="ethConver()"></el-input></td>
@@ -199,43 +306,71 @@
             </tr>
             <tr>
                 <td></td>
-                <td><el-button @click="ethBtnClk">兑换</el-button></td>
+                <td></td>
             </tr>
           </table>
+          <br/>
+          <el-button @click="ethBtnClk" type="primary">{{$t('message.user_dh')}}</el-button>
         </el-tab-pane>
       </el-tabs>
     </el-dialog>
 
 
-    <el-dialog v-model="dialogVisible5" title="交易记录" width="80%" style="text-content: center;">
+    <el-dialog v-model="dialogVisible5" :title="$t('message.user_jyjl')" width="80%" style="text-content: center;">
       <el-table :data="orders" height="350" style="width: 100%; font-size: 10px;" table-layout="auto">
-        <el-table-column prop="date" label="交易类型" width="80">
+        <el-table-column prop="date" :label="$t('message.user_jylx')" width="120">
           <template #default="scope">
-            <el-text v-if="scope.row.type=='1'" style="font-size: 10px"><el-icon><CreditCard /></el-icon>充值</el-text>
-            <el-text v-if="scope.row.type=='2'" style="font-size: 10px"><el-icon><Coin /></el-icon>提现</el-text>
+            <el-text v-if="scope.row.type=='1'" style="font-size: 10px"><el-icon><CreditCard /></el-icon>{{$t('message.user_cz')}}</el-text>
+            <el-text v-if="scope.row.type=='2'" style="font-size: 10px"><el-icon><Coin /></el-icon>{{$t('message.user_tx')}}</el-text>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="金额(USTD)" width="90" >
+        <el-table-column prop="name" :label="$t('message.user_je')" width="130" >
           <template #default="scope">{{ scope.row.amount }}</template>
           
         </el-table-column>
-        <el-table-column prop="name" label="状态" width="80" >
+        <el-table-column prop="name" :label="$t('message.user_zt')" width="120" >
           <template #default="scope">
-            <el-text v-if="scope.row.status=='1'" type="primary" style="font-size: 10px">审核中</el-text>
-            <el-text v-if="scope.row.status=='2'" type="success" style="font-size: 10px">通过</el-text>
-            <el-text v-if="scope.row.status=='3'" type="danger" style="font-size: 10px">未通过</el-text>
+            <el-text v-if="scope.row.status=='1'" type="primary" style="font-size: 10px">{{$t('message.user_shz')}}</el-text>
+            <el-text v-if="scope.row.status=='2'" type="success" style="font-size: 10px">{{$t('message.user_tg')}}</el-text>
+            <el-text v-if="scope.row.status=='3'" type="danger" style="font-size: 10px">{{$t('message.user_wtg')}}</el-text>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="交易时间" width="80" >
+        <el-table-column prop="name" :label="$t('message.user_jysj')" width="130" >
           <template #default="scope">{{ scope.row.time }}</template>
           
         </el-table-column>
-        <el-table-column prop="address" label="TRC20-地址" width="180">
+        <el-table-column prop="address" :label="$t('message.user_dz')" width="180">
           <template #default="scope">{{ scope.row.trc20 }}</template>
           
         </el-table-column>
       </el-table>
     </el-dialog>
+    <el-dialog v-model="dialogVisible6" :title="$t('message.user_bzzx')" width="80%">
+      <div>
+          <table style="text-align: center;width:100%">
+            <tr>
+              <td>
+              </td>
+              <td>
+                <img style="width:170px;" :src="helpQrCode" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+              </td>
+              <td>
+                <span id="helpPhone">{{helpPhone}}</span>
+                &nbsp;&nbsp;<el-button type="primary" @click="copyHelpPhone()">{{$t('message.user_fz')}}</el-button>
+              </td>
+            </tr>
+          </table>
+        </div>
+    </el-dialog>
+
+
+
+
+    <div style="height:100px"></div>
   </div>
 </template>
   
@@ -263,13 +398,23 @@ const register = ref({
 });
 const userToken = sessionStorage.getItem("userToken") 
 const trc20 = ref("");
+const phone = ref("");
+const qrCode = ref("");
+const btcPhone = ref("");
+const btcQrCode = ref("");
+const ethPhone = ref("");
+const ethQrCode = ref("");
+const helpPhone = ref("");
+const helpQrCode = ref("");
 const dialogVisible = ref(false);
 const dialogVisible2 = ref(false);
 const dialogVisible3 = ref(false);
 const dialogVisible4 = ref(false);
 const dialogVisible5 = ref(false);
+const dialogVisible6 = ref(false);
 const activeName = ref("first");
 const shanduiActive = ref("btc");
+const cbActive = ref("usdt");
 const shanduiActive_btc_self = ref("btc");
 const shanduiActive_btc_taget = ref("ustd");
 const shanduiActive_eth_self = ref("eth");
@@ -283,6 +428,11 @@ const ethNum2 = ref(0.0000);
 const myTrc20 = ref("");
 const myAmount = ref(0);
 const orders = ref([]);
+
+const secClk = () => {
+  loginJson.value.loginName=''
+  loginJson.value.loginPassword=''
+}
 
 const shanduiActiveBtcReverse = () => {
   var temp = shanduiActive_btc_self.value
@@ -308,7 +458,7 @@ const copytrc20 = () => {
   // 复制文本
   document.execCommand("copy");
   ElMessage({
-    message: "复制成功",
+    message: "copy seccess",
     type: "success"
   });
 };
@@ -317,6 +467,8 @@ onMounted(() => {
   getUserInfo
   getBtcFee
   getEthFee
+  getQrCode
+  getQrPhone
   getEarning();
   get('/pub/getValue',{name:"TRC20"}).then(response => {
     trc20.value = response.data.data
@@ -352,7 +504,6 @@ const ethConver = () =>{
 const getUserInfo = get('user/info',{}).then(response => {
   if(response.data.code == 200){
     user.value = response.data.data
-    console.log(user.value)
   }else{
     sessionStorage.removeItem("userToken")
   }
@@ -361,14 +512,57 @@ const getUserInfo = get('user/info',{}).then(response => {
 const getEthFee = get('/pub/getValue',{name:"eth"}).then(response => {
   if(response.data.code == 200){
     ethFee.value = parseFloat(response.data.data)
-    console.log(ethFee.value)
   }
 })
 
 const getBtcFee = get('/pub/getValue',{name:"btc"}).then(response => {
   if(response.data.code == 200){
     btcFee.value = parseFloat(response.data.data)
-    console.log(btcFee.value)
+  }
+})
+
+const getQrCode = get('/pub/getValue',{name:"qrCode"}).then(response => {
+  if(response.data.code == 200){
+    qrCode.value = response.data.data
+  }
+})
+
+const getQrPhone = get('/pub/getValue',{name:"phone"}).then(response => {
+  if(response.data.code == 200){
+    phone.value = response.data.data
+  }
+})
+const getBtcQrCode = get('/pub/getValue',{name:"btcQrCode"}).then(response => {
+  if(response.data.code == 200){
+    btcQrCode.value = response.data.data
+  }
+})
+
+const getBtcQrPhone = get('/pub/getValue',{name:"btcPhone"}).then(response => {
+  if(response.data.code == 200){
+    btcPhone.value = response.data.data
+  }
+})
+const getEthQrCode = get('/pub/getValue',{name:"ethQrCode"}).then(response => {
+  if(response.data.code == 200){
+    ethQrCode.value = response.data.data
+  }
+})
+
+const getEthQrPhone = get('/pub/getValue',{name:"ethPhone"}).then(response => {
+  if(response.data.code == 200){
+    ethPhone.value = response.data.data
+  }
+})
+const getHelpQrCode = get('/pub/getValue',{name:"helpQrCode"}).then(response => {
+  if(response.data.code == 200){
+    helpQrCode.value = response.data.data
+  }
+})
+
+const getHelpQrPhone = get('/pub/getValue',{name:"helpPhone"}).then(response => {
+  if(response.data.code == 200){
+    helpPhone.value = response.data.data
   }
 })
 
@@ -379,7 +573,9 @@ const login = () =>{
       localStorage.setItem("wxStatus", "1")
       ElMessage.success("success")
       getUserInfo
-      location.reload()
+      window.setTimeout(function() {
+          window.location.reload();
+        }, 1000);
     }else{
       ElMessage.error(response.data.message)  
     }
@@ -392,7 +588,9 @@ const regist = () =>{
   post('/qwertyuiop/user/add',register.value).then(response => {
     if(response.data.code == 200){
       ElMessage.success("success")
-      location.reload()
+      window.setTimeout(function() {
+          window.location.reload();
+        }, 1000);
     }else{
       ElMessage.error(response.data.message)  
     }
@@ -408,7 +606,9 @@ const logout = () =>{
       localStorage.removeItem("wxStatus")
       ElMessage.success("logout success")
       getUserInfo
-      location.reload()
+      window.setTimeout(function() {
+          window.location.reload();
+        }, 1000);
     }else{
       ElMessage.error(response.data.message)  
     }
@@ -437,7 +637,9 @@ const btcBtnClk = () =>{
   post('account/conversion',{"option":shanduiActive_btc_self.value+"2"+shanduiActive_btc_taget.value,"num":btcNum1.value}).then(response => {
     if(response.data.code == 200){
       ElMessage.success("success")
-      location.reload()
+      window.setTimeout(function() {
+          window.location.reload();
+        }, 1000);
     }else{
       ElMessage.error(response.data.message)  
     }
@@ -450,7 +652,9 @@ const ethBtnClk = () =>{
   post('account/conversion',{"option":shanduiActive_eth_self.value+"2"+shanduiActive_eth_taget.value,"num":ethNum1.value}).then(response => {
     if(response.data.code == 200){
       ElMessage.success("success")
-      location.reload()
+      window.setTimeout(function() {
+          window.location.reload();
+        }, 1000);
     }else{
       ElMessage.error(response.data.message)  
     }
@@ -461,10 +665,16 @@ const ethBtnClk = () =>{
 
 
 const tixian = () =>{
+  if(!isNaN(myAmount.value) && myAmount.value <= 0){
+    ElMessage.error("error")
+    return
+  }
   post('account/withdraw',{"uuid":user.uuid,"trc20":myTrc20.value,"amount":myAmount.value}).then(response => {
     if(response.data.code == 200){
       ElMessage.success("success")
-      location.reload()
+      window.setTimeout(function() {
+          window.location.reload();
+        }, 1000);
       dialogVisible2.value = false
     }else{
       ElMessage.error(response.data.message)  
@@ -486,11 +696,37 @@ const orderList = () =>{
     ElMessage.error(error.response.data.message)
   });
 }
+
+const copyPhone = () =>{
+  copy(document.getElementById('phone').innerText)
+}
+const copyHelpPhone = () =>{
+  copy(document.getElementById('helpPhone').innerText)
+}
+const copySecKey = () =>{
+  copy(document.getElementById('seckey').innerText)
+}
+const copyBtcPhone = () =>{
+  copy(document.getElementById('btcPhone').innerText)
+}
+const copyEthPhone = () =>{
+  copy(document.getElementById('ethPhone').innerText)
+}
+
+const copy = (data) =>{
+  let oInput = document.createElement('input');
+  oInput.value = data;
+  document.body.appendChild(oInput);
+  oInput.select(); // 选择对象;
+  document.execCommand('copy'); // 执行浏览器复制命令
+  ElMessage.success("copy seccess")
+  oInput.remove()
+}
+
 </script>
   
   <style scoped>
 .user-body {
-  height: 100vh;
   width: 80%;
   display: inline-block; /* 或者设置为 block 元素 */
   margin-left: 10%;

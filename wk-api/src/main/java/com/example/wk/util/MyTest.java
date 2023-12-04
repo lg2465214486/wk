@@ -1,5 +1,7 @@
 package com.example.wk.util;
 
+import cn.hutool.core.util.StrUtil;
+
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
@@ -17,14 +19,15 @@ public class MyTest {
 //        } while (uuids.contains(uuid));
 //        System.out.println(uuid);
         //获取秒数
-        long nowSecond = LocalDateTime.now().toEpochSecond(ZoneOffset.ofHours(0));
-        try {
-            Thread.sleep(3000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        long endSecond = LocalDateTime.now().toEpochSecond(ZoneOffset.ofHours(0));
-        long absSeconds = Math.abs(nowSecond - endSecond);
-        System.out.println(absSeconds + "||");
+        //long nowSecond = LocalDateTime.now().toEpochSecond(ZoneOffset.ofHours(0));
+        //try {
+        //    Thread.sleep(3000L);
+        //} catch (InterruptedException e) {
+        //    e.printStackTrace();
+        //}
+        //long endSecond = LocalDateTime.now().toEpochSecond(ZoneOffset.ofHours(0));
+        //long absSeconds = Math.abs(nowSecond - endSecond);
+        //System.out.println(absSeconds + "||");
+        System.out.println(UUID.randomUUID().toString().replace("-", "").toUpperCase());
     }
 }

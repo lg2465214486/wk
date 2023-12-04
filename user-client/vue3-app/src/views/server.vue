@@ -1,39 +1,73 @@
 <template>
   <div>
+        <el-select v-model="i18nValue" @change="changeI18n" placeholder="Select" size="small" style="width:100px; position:absolute;right:0px; top:0px">
+          <el-option key="1" value="en"></el-option>
+          <el-option key="2" value="zh"></el-option>
+          <el-option key="3" value="es"></el-option>
+          <el-option key="4" value="th"></el-option>
+          <el-option key="5" value="ja"></el-option>
+          <el-option key="6" value="ko"></el-option>
+          <el-option key="7" value="ar"></el-option>
+        </el-select>
     <div v-if=" wxStatus != null && wxStatus == '2'" style="text-align: center;">
       <div class="server-body">
         <br />
         <br />
-        <div>质押挖矿EthereumPOW</div>
+        <div><span style="font-family: '幼圆';font-size: 1.205em;font-weight: 600;">{{$t('message.home_title')}}</span></div>
         <br />
         <div>
           <el-button class="btn" @click="stop" circle>
-            <span style="font-size: 30px;">
-              点击暂停
+            <span style="font-family: '幼圆';font-size: 1.905em;font-weight: 600;">
+              {{$t('message.home_stop')}}
               <br />
             </span>
           </el-button>
         </div>
         <div style="display: flex;align-items: center;justify-content: center;">
           <img class="action_icon" style="width:100px;" src="../assets/1923929193.gif" />
-          <span style="font-size: 15px;">当前收益(USTD)：{{earning.earnings}}</span>&nbsp;&nbsp;
+          <span style="font-family: '微软雅黑';font-size: 0.82em;font-weight: 500;">{{$t('message.home_dqsy')}}(USTD)：{{earning.earnings}}</span>&nbsp;&nbsp;
           <el-button style="width: 20px;height: 20px;" :icon="Refresh" circle />
         </div>
-        <br />
-        <div>质押数量：{{earning.moneyQuantity}}</div>
-        <div>剩余金额：{{user.ustd}}</div>
+        <div style="font-family: '微软雅黑';font-size: 0.82em;font-weight: 500;">{{$t('message.home_zysl')}}：{{earning.moneyQuantity}}</div>
+        <div style="font-family: '微软雅黑';font-size: 0.82em;font-weight: 500;">{{$t('message.home_syje')}}：{{user.ustd}}</div>
+        <div style="height:100px"></div>
+        <div style="text-align: left;font-family: '微软雅黑';font-size: 0.90em;font-weight: 500;">
+          <table>
+            <tr>
+              <td>{{$t('message.home_p1')}}</td>
+            </tr>
+            <tr>
+              <td>{{$t('message.home_p2')}}</td>
+            </tr>
+            <tr>
+              <td>{{$t('message.home_p3')}}</td>
+            </tr>
+            <tr>
+              <td>{{$t('message.home_p4')}}</td>
+            </tr>
+            <tr>
+              <td>{{$t('message.home_p5')}}</td>
+            </tr>
+            <tr>
+              <td>{{$t('message.home_p6')}}</td>
+            </tr>
+            <tr>
+              <td>{{$t('message.home_p7')}}</td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
     <div v-if="wxStatus == null || wxStatus == '1'" style="text-align: center;">
       <div class="server-body">
         <br />
         <br />
-        <div>质押挖矿 EthereumPOW</div>
+        <div><span style="font-family: '幼圆';font-size: 1.205em;font-weight: 600;">{{$t('message.home_title')}}</span></div>
         <br />
         <div>
           <el-button class="btn" circle @click="start">
-            <span style="font-size: 30px;">
-              点击开始
+            <span style="font-family: '幼圆';font-size: 1.905em;font-weight: 600;">
+              {{$t('message.home_start')}}
               <br />
             </span>
           </el-button>
@@ -42,19 +76,47 @@
         <div>
           <table style="margin: 0 auto;">
             <tr>
-              <td>质押数量(USTD)：</td>
+              <td style="font-family: '微软雅黑';font-size: 0.82em;font-weight: 500;">{{$t('message.home_zysl')}}(USTD)：</td>
               <td>
-                <el-input style="width: 120px;" v-model="moneyQuantity"></el-input>
+                <el-input style="width: 8.905em;" v-model="moneyQuantity"></el-input>
               </td>
             </tr>
+            <tr><br/></tr>
             <tr>
-              <td>剩余金额(USTD)：</td>
+              <td style="font-family: '微软雅黑';font-size: 0.82em;font-weight: 500;">{{$t('message.home_syje')}}(USTD)：</td>
               <td>{{user.ustd}}</td>
+            </tr>
+          </table>
+        </div>
+        <div style="height:100px"></div>
+        <div style="text-align: left;font-family: '微软雅黑';font-size: 0.90em;font-weight: 500;">
+          <table>
+            <tr>
+              <td>{{$t('message.home_p1')}}</td>
+            </tr>
+            <tr>
+              <td>{{$t('message.home_p2')}}</td>
+            </tr>
+            <tr>
+              <td>{{$t('message.home_p3')}}</td>
+            </tr>
+            <tr>
+              <td>{{$t('message.home_p4')}}</td>
+            </tr>
+            <tr>
+              <td>{{$t('message.home_p5')}}</td>
+            </tr>
+            <tr>
+              <td>{{$t('message.home_p6')}}</td>
+            </tr>
+            <tr>
+              <td>{{$t('message.home_p7')}}</td>
             </tr>
           </table>
         </div>
       </div>
     </div>
+    <div style="height:100px"></div>    
   </div>
 </template>
   
@@ -66,14 +128,27 @@ import axios, { get, post } from "../js/axiosConfig.js";
 const user = ref({});
 const earning = ref({});
 const moneyQuantity = ref("");
-const wxStatus = localStorage.getItem("wxStatus") 
+const wxStatus = localStorage.getItem("wxStatus");
+const i18nValue = ref("");
 
 onBeforeMount(() => {
   getUserInfo();
   getEarning();
+  if(!localStorage.getItem('i18n')){
+    localStorage.setItem('i18n','en');
+  }
+  i18nValue.value = localStorage.getItem('i18n');
 });
 
+const changeI18n = (value) => {
+  localStorage.setItem('i18n',value);
+  location.reload();
+}
+
 const getEarning = () => {
+  if (localStorage.getItem("wxStatus") != "2"){
+      return
+  }
   get("mining/earnings", {})
     .then(response => {
       if (response.data.code == 200) {
@@ -88,7 +163,7 @@ const getEarning = () => {
       }
     })
     .catch(error => {
-      ElMessage.error("Request failed");
+      // ElMessage.error("Request failed");
     });
 };
 
@@ -110,7 +185,9 @@ const start = () => {
         getEarning;
         ElMessage.success("success");
         localStorage.setItem("wxStatus","2")
-        location.reload();
+        window.setTimeout(function() {
+          window.location.reload();
+        }, 1000);
       } else {
         ElMessage.error(response.data.message);
       }
@@ -128,7 +205,9 @@ const stop = () => {
         getEarning;
         ElMessage.success("success");
         localStorage.setItem("wxStatus","1")
-        location.reload();
+        window.setTimeout(function() {
+          window.location.reload();
+        }, 1000);
       } else {
         ElMessage.error(response.data.message);
       }

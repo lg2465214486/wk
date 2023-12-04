@@ -45,6 +45,8 @@ public class WkTopUp implements Serializable {
 
     private LocalDateTime createdDate;
 
+    private String bz;
+
     @TableField(exist = false)
     private String uuid;
 }

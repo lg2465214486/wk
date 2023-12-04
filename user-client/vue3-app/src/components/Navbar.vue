@@ -4,14 +4,14 @@
         background-color="rgb(3, 66, 85)"
         text-color="#fff"
         active-text-color="#ffd04b" router>
-        <el-menu-item id="home" index="/"><el-icon><Platform /></el-icon>服务器</el-menu-item>
-        <el-menu-item id="about" index="/about"><el-icon><Promotion /></el-icon>简介</el-menu-item>
-        <el-menu-item id="user" index="/user"><el-icon><Avatar /></el-icon>账户</el-menu-item>
+        <el-menu-item id="home" index="/"><el-icon><Platform /></el-icon>{{$t('message.nav_server')}}</el-menu-item>
+        <el-menu-item id="about" index="/about"><el-icon><Promotion /></el-icon>{{$t('message.nav_about')}}</el-menu-item>
+        <el-menu-item id="user" index="/user"><el-icon><Avatar /></el-icon>{{$t('message.nav_user')}}</el-menu-item>
       </el-menu>
       <!-- //叼毛 -->
     </div>
 </template>
-<script lang="ts" setup>
+<script setup>
 import {
   Platform,
   Promotion,
@@ -22,11 +22,11 @@ import { Calendar, Search } from "@element-plus/icons-vue";
 const webSearch = ref("");
 const navigationValue = ref("/");
 
-const selectMenuItem = (itemIndex: string) => {
+const selectMenuItem = (itemIndex) => {
   navigationValue.value = itemIndex;
   console.log(navigationValue.value)
 };
-const handleSelect = (key: string, keyPath: string[]) => {
+const handleSelect = (key, keyPath) => {
   console.log(key, keyPath)
   navigationValue.value = key;
 }
@@ -57,5 +57,6 @@ navigationValue.value = pathName;
   bottom: 0;
   left: 0;
   width: 100%;
+  z-index:100;
 }
 </style>

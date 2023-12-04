@@ -11,5 +11,6 @@ import lombok.Data;
 public class MoneyOptionParam {
     String uuid;
     String trc20;
+    String bz;
     String amount;
 }

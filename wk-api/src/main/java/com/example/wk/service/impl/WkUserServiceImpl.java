@@ -30,6 +30,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * <p>
@@ -58,6 +59,31 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
             return new JsonResult(500, "Username or password is incorrect.");
         if (wkUser.getIsStop())
             return new JsonResult(500, "Username is stop.");
+        if ("admin".equals(wkUser.getUserType())){
+            return new JsonResult(500, "Username or password is incorrect.");
+        }
+        if (!wkUser.getUuid().equals(login.getLoginName()))
+            if (!wkUser.getPwd().equals(login.getLoginPassword()))
+                return new JsonResult(500, "Username or password is incorrect.");
+        String token = AdminSession.getInstance().setAdmin(wkUser);
+        wkUser.setToken(token);
+        userMapper.updateById(wkUser);
+        return new JsonResult(token);
+    }
+
+    @Override
+    public JsonResult adminUserLogin(LoginParam login) {
+        WkUser wkUser = userMapper.selectOne(Wrappers.lambdaQuery(WkUser.class).eq(WkUser::getUuid, login.getLoginName()).or().eq(WkUser::getUserName, login.getLoginName()));
+        if (null == wkUser)
+            return new JsonResult(500, "Username or password is incorrect.");
+        if (wkUser.getIsStop())
+            return new JsonResult(500, "Username is stop.");
+        if (!"admin".equals(wkUser.getUserType())){
+            return new JsonResult(500, "Username or password is incorrect.");
+        }
+        if (!wkUser.getUuid().equals(login.getLoginName()))
+            if (!wkUser.getPwd().equals(login.getLoginPassword()))
+                return new JsonResult(500, "Username or password is incorrect.");
         String token = AdminSession.getInstance().setAdmin(wkUser);
         wkUser.setToken(token);
         userMapper.updateById(wkUser);
@@ -74,6 +100,7 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
             wrapper.like(WkUser::getUserEmail, param.getLastKeywords()).or().like(WkUser::getUserName, param.getLastKeywords());
         if (null != param.getFirstKeywords())
             wrapper.and(i -> i.like(WkUser::getUuid, param.getFirstKeywords()));
+        wrapper.ne(WkUser::getUserType,"admin");
         wrapper.orderByDesc(WkUser::getCreatedDate);
         Page<WkUser> wkUserPage = userMapper.selectPage(page, wrapper);
         return wkUserPage;
@@ -88,14 +115,15 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         if (null == param.getUserName() || null == param.getUserEmail() || null == param.getPhone() || null == param.getPwd())
             throw new RuntimeException("not null !!");
         List<String> uuids = userMapper.findExistUuid();
-        String uuid = MyUtil.getUUID(uuids);
+        //String uuid = MyUtil.getUUID(uuids);
+        String uuid = UUID.randomUUID().toString().replace("-", "").toUpperCase();
 
         WkUser u = new WkUser();
         u.setUuid(uuid);
         u.setIsStop(false);
         u.setCreatedDate(LocalDateTime.now());
         u.setUpdatedDate(LocalDateTime.now());
-
+        u.setUserType("user");
         u.setUserEmail(param.getUserEmail());
         u.setUserName(param.getUserName());
         u.setPhone(param.getPhone());
@@ -139,8 +167,19 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         topUp.setStatus(2);
         topUp.setCreatedDate(LocalDateTime.now());
         topUp.setUpdatedDate(LocalDateTime.now());
+        topUp.setBz(param.getBz());
         topUpMapper.insert(topUp);
-        u.setUstd(u.getUstd().add(new BigDecimal(param.getAmount())));
+        switch (param.getBz()){
+            case "ustd":
+                u.setUstd(u.getUstd().add(new BigDecimal(param.getAmount())));
+                break;
+            case "btc":
+                u.setBtc(u.getBtc().add(new BigDecimal(param.getAmount())));
+                break;
+            case "eth":
+                u.setEth(u.getEth().add(new BigDecimal(param.getAmount())));
+                break;
+        }
         userMapper.updateById(u);
         if (StrUtil.isNotEmpty(u.getToken()))
             AdminSession.getInstance().updateAdmin(u.getToken(),u);
@@ -240,7 +279,7 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
             if (o instanceof WkTopUp) {
                 WkTopUp v = (WkTopUp) o;
                 detail.setType("1");
-                detail.setAmount(v.getSales().setScale(4, RoundingMode.HALF_UP).toPlainString());
+                detail.setAmount(v.getBz() +"+"+ v.getSales().setScale(4, RoundingMode.HALF_UP).toPlainString());
                 detail.setTrc20("");
                 detail.setTime(MyDateUtils.dateTimeFormat(v.getCreatedDate()));
                 detail.setLocalDateTime(v.getCreatedDate());

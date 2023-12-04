@@ -1,0 +1,8 @@
+{
+  "appId": "top.copisp.eos",
+  "appName": "Eosmall",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

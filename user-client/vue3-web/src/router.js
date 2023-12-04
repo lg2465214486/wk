@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import sys from "./views/sys.vue"
+import login from "./views/login.vue"
 import toplist from "./views/toplist.vue"
 import userlist from "./views/userlist.vue"
 import withdrawlist from "./views/withdrawlist.vue"
@@ -8,6 +9,10 @@ const routes = [
     {
       path: '/endmandgtrc20m',
       component: sys,
+    },
+    {
+      path: '/endmandgtrc20m/login',
+      component: login,
     },
     {
       path: '/endmandgtrc20m/top_list',

@@ -23,6 +23,8 @@ public interface IWkUserService extends IService<WkUser> {
 
     JsonResult userLogin(LoginParam login);
 
+    JsonResult adminUserLogin(LoginParam login);
+
     Page<WkUser> findUserList(ListParam param);
 
     JsonResult addUser(UserParam param);

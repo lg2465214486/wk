@@ -29,6 +29,16 @@ public class LoginController {
     }
 
     /**
+     * 用户登录
+     * @param login
+     * @return
+     */
+    @PostMapping("/user/adminLogin")
+    public JsonResult adminLogin(@RequestBody LoginParam login) {
+        return wkUserService.adminUserLogin(login);
+    }
+
+    /**
      * 用户登出
      * @return
      */

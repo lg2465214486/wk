@@ -2,12 +2,15 @@ package com.example.wk.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.example.wk.config.AdminSession;
+import com.example.wk.entity.WkSystem;
 import com.example.wk.entity.WkUnderway;
 import com.example.wk.entity.WkUser;
 import com.example.wk.mapper.WkUnderwayMapper;
 import com.example.wk.mapper.WkUserMapper;
 import com.example.wk.pojo.MiningParam;
 import com.example.wk.pojo.dto.Earnings;
+import com.example.wk.service.CommonService;
+import com.example.wk.service.IWkSystemService;
 import com.example.wk.service.IWkUnderwayService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,8 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
     private WkUnderwayMapper underwayMapper;
     @Autowired
     private WkUserMapper userMapper;
+    @Autowired
+    private CommonService commonService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -120,7 +125,8 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
         long nowSecond = start.toEpochSecond(ZoneOffset.ofHours(0));
         long endSecond = end.toEpochSecond(ZoneOffset.ofHours(0));
         long absSeconds = Math.abs(nowSecond - endSecond);
-        BigDecimal daySales = sales.multiply(new BigDecimal("0.10")).setScale(4,BigDecimal.ROUND_HALF_UP);
+        String myRate = commonService.getValueByKey("myRate");
+        BigDecimal daySales = sales.multiply(new BigDecimal(myRate)).setScale(4,BigDecimal.ROUND_HALF_UP);
         BigDecimal secondSales = daySales.divide(BigDecimal.valueOf(86400), 4,BigDecimal.ROUND_HALF_UP);
         return secondSales.multiply(BigDecimal.valueOf(absSeconds)).setScale(4,BigDecimal.ROUND_HALF_UP);
     }

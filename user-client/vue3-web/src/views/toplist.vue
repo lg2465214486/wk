@@ -5,17 +5,18 @@
         <hr>
         <table>
             <tr>
-              <td><el-input placeholder="uuid" v-model="listJson.firstKeywords" clearable></el-input></td>
+              <td><el-input placeholder="私钥" v-model="listJson.firstKeywords" clearable></el-input></td>
               <td><el-input placeholder="账户" v-model="listJson.lastKeywords" clearable></el-input></td>
               <td><el-button type="primary" @click="getTopList">搜索</el-button></td>
             </tr>
+            
           </table>
           <el-table :data="topList" border style="width: 100%" table-layout="auto">
-            <el-table-column prop="date" label="uuid" width="auto">
+            <el-table-column prop="date" label="私钥" width="auto">
               <template #default="scope">{{ scope.row.uuid }}</template>
             </el-table-column>
             <el-table-column prop="name" label="充值金额" width="auto" >
-              <template #default="scope">{{ scope.row.sales }}</template>
+              <template #default="scope">{{ scope.row.bz }}+{{ scope.row.sales }}</template>
             </el-table-column>
             <el-table-column prop="date" label="提交时间" width="auto" >
               <template #default="scope">{{ scope.row.createdDate }}</template>

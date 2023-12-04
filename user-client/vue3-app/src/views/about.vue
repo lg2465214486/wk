@@ -1,16 +1,16 @@
 <template>
   <div style="text-align: center;">
     <div class="about-body">
-      <h1>公司简介</h1>
+      <h1>{{$t('message.about_gsjj')}}</h1>
       <hr />
       <div> 
-        <sapn>{{ about }}</sapn>
+        <sapn style="white-space:pre-wrap">{{ about }}</sapn>
       </div>
     </div>
   </div>
 </template>
   
-<script  lang="ts" setup>
+<script setup>
 import { ref } from "vue";
 import axios, { get, post } from "../js/axiosConfig.js";
 

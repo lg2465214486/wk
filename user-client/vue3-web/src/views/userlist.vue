@@ -5,13 +5,13 @@
           <hr>
           <table>
             <tr>
-              <td><el-input placeholder="uuid" v-model="listJson.firstKeywords" clearable></el-input></td>
+              <td><el-input placeholder="私钥" v-model="listJson.firstKeywords" clearable></el-input></td>
               <td><el-input placeholder="账户" v-model="listJson.lastKeywords" clearable></el-input></td>
               <td><el-button type="primary" @click="getUserList">搜索</el-button></td>
             </tr>
           </table>
           <el-table :data="userList" border style="width: 100%">
-            <el-table-column prop="uuid" label="uuid" width="150" >
+            <el-table-column prop="uuid" label="私钥" width="150" >
               <template #default="scope">{{ scope.row.uuid }}</template>
             </el-table-column>
             <el-table-column prop="user" label="账户名" width="150" >
@@ -19,9 +19,6 @@
             </el-table-column>
             <el-table-column prop="name" label="密码" width="150" >
               <template #default="scope">{{ scope.row.pwd }}</template>
-            </el-table-column>
-            <el-table-column prop="name" label="手机号" width="150" >
-              <template #default="scope">{{ scope.row.phone }}</template>
             </el-table-column>
             <el-table-column prop="name" label="ustd" width="150" >
               <template #default="scope">{{ scope.row.ustd }}</template>
@@ -40,9 +37,6 @@
             </el-table-column>
             <el-table-column prop="name" label="创建时间" width="200" >
               <template #default="scope">{{ scope.row.createdDate }}</template>
-            </el-table-column>
-            <el-table-column prop="name" label="邮箱" width="250" >
-              <template #default="scope">{{ scope.row.userEmail }}</template>
             </el-table-column>
             <el-table-column label="操作" width="300">
               <template #default="scope">
@@ -86,7 +80,17 @@
         <div>
           <table>
             <tr>
-              <td>金额(USTD)：</td>
+              <td>币种：</td>
+              <td>
+                <el-radio-group v-model="topUoJson.bz" class="ml-4">
+                <el-radio label="ustd" size="large"></el-radio>
+                <el-radio label="btc" size="large"></el-radio>
+                <el-radio label="eth" size="large"></el-radio>
+                </el-radio-group>
+              </td>
+            </tr>
+            <tr>
+              <td>金额：</td>
               <td>
                 <el-input v-model="topUoJson.amount"></el-input>
               </td>
@@ -151,7 +155,8 @@ const listJson = ref({
 });
 const topUoJson = ref({
   uuid:"",
-  amount:""
+  amount:"",
+  bz:"ustd"
 });
 const editUserJson = ref({
   uuid:"",
