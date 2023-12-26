@@ -41,6 +41,15 @@ public class UserParam {
 
     String eth;
 
+    Integer vipGrade;
+
+    String ustdAds;
+    String ustdQrCode;
+    String btcAds;
+    String btcQrCode;
+    String ethAds;
+    String ethQrCode;
+
     Boolean isStop;
 
 }

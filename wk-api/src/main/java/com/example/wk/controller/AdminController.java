@@ -1,13 +1,19 @@
 package com.example.wk.controller;
 
 import com.example.wk.config.JsonResult;
+import com.example.wk.config.JsonResultUtil;
+import com.example.wk.entity.WkVip;
+import com.example.wk.mapper.WkVipMapper;
 import com.example.wk.pojo.ExamineParam;
 import com.example.wk.pojo.SysEditParam;
 import com.example.wk.pojo.ListParam;
 import com.example.wk.pojo.UserParam;
 import com.example.wk.service.*;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/qwertyuiop")
@@ -98,6 +104,37 @@ public class AdminController {
     public JsonResult editUser(@RequestBody UserParam param) {
         return userService.editUser(param);
     }
+
+    @Autowired
+    private WkVipMapper wkVipMapper;
+
+    /**
+     * vip列表
+     * @return
+     */
+    @GetMapping("/user/vipList")
+    public JsonResult vipList() {
+        return JsonResultUtil.success(wkVipMapper.selectList(null));
+    }
+
+    /**
+     * vip列表
+     * @return
+     */
+    @PostMapping("/user/vipEdit")
+    public JsonResult vipEdit(@RequestBody VipEditParam vipEditParam) {
+        WkVip wkVip = wkVipMapper.selectById(vipEditParam.getId());
+        wkVip.setWkRate(vipEditParam.getVipRate());
+        wkVipMapper.updateById(wkVip);
+        return JsonResultUtil.success();
+    }
+
+    @Data
+    public static class VipEditParam{
+        Integer id;
+        BigDecimal vipRate;
+    }
+
 
     /**
      * 系统变量编辑

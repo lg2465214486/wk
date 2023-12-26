@@ -24,7 +24,7 @@ public class AdminSession {
     private RedisTemplate<String, WkUser> redisTemplate;
     @Autowired
     private WkUserMapper userMapper;
-    private static final String SESSION_KEY = "session:user:";
+    private static final String SESSION_KEY = "session:admin:";
     private static AdminSession instance;
 
     public AdminSession() {

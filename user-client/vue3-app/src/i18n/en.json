@@ -59,6 +59,8 @@
         "user_p1":"Backup prompt",
         "user_p2":"*Obtaining the private key is equivalent to having ownership of the wallet assets",
         "user_p3":"*Keep the private key properly in a safe place isolated from the network",
-        "user_p4":"*Please do not share or store the private key in an online environment"
+        "user_p4":"*Please do not share or store the private key in an online environment",
+        "user_dlgg":"Announcement",
+        "user_vipts":"Hint"
     }
 }

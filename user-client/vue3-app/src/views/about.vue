@@ -6,6 +6,7 @@
       <div> 
         <sapn style="white-space:pre-wrap">{{ about }}</sapn>
       </div>
+      <div style="height:100px"></div>
     </div>
   </div>
 </template>

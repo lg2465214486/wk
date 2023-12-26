@@ -1,12 +1,15 @@
 package com.example.wk.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.example.wk.config.AdminSession;
 import com.example.wk.entity.WkSystem;
 import com.example.wk.entity.WkUnderway;
 import com.example.wk.entity.WkUser;
+import com.example.wk.entity.WkVip;
 import com.example.wk.mapper.WkUnderwayMapper;
 import com.example.wk.mapper.WkUserMapper;
+import com.example.wk.mapper.WkVipMapper;
 import com.example.wk.pojo.MiningParam;
 import com.example.wk.pojo.dto.Earnings;
 import com.example.wk.service.CommonService;
@@ -52,7 +55,7 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
         List<WkUnderway> underways = underwayMapper.selectList(Wrappers.lambdaQuery(WkUnderway.class)
                 .eq(WkUnderway::getUserId, user.getId()).eq(WkUnderway::getStatus, 1));
         for (WkUnderway underway : underways) {
-            this.stopUnderwayByEntity(underway);
+            this.stopUnderwayByEntity(underway, user);
         }
         WkUnderway wkUnderway = new WkUnderway();
         wkUnderway.setUserId(user.getId());
@@ -79,7 +82,7 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
                 .eq(WkUnderway::getUserId, user.getId()).eq(WkUnderway::getStatus, 1));
         BigDecimal earnings = BigDecimal.ZERO;
         for (WkUnderway underway : underways) {
-            earnings = earnings.add(this.stopUnderwayByEntity(underway)).add(underway.getMoneyQuantity());
+            earnings = earnings.add(this.stopUnderwayByEntity(underway, user)).add(underway.getMoneyQuantity());
         }
 
         user.setUstd(user.getUstd().add(earnings));
@@ -88,15 +91,15 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
         return "success";
     }
 
-    private BigDecimal stopUnderwayById(Integer id) {
-        WkUnderway underway = underwayMapper.selectById(id);
-        return this.stopUnderwayByEntity(underway);
-    }
+    //private BigDecimal stopUnderwayById(Integer id) {
+    //    WkUnderway underway = underwayMapper.selectById(id);
+    //    return this.stopUnderwayByEntity(underway);
+    //}
 
-    private BigDecimal stopUnderwayByEntity(WkUnderway underway) {
+    private BigDecimal stopUnderwayByEntity(WkUnderway underway, WkUser wkUser) {
         LocalDateTime now = LocalDateTime.now();
         underway.setStatus(2);
-        underway.setEarnings(this.earningsCoefficient(underway.getStartDate(), now, underway.getMoneyQuantity()));
+        underway.setEarnings(this.earningsCoefficient(underway.getStartDate(), now, underway.getMoneyQuantity(), wkUser));
         underway.setEndDate(now);
         underway.setUpdatedDate(now);
         underwayMapper.updateById(underway);
@@ -112,7 +115,7 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
                 .eq(WkUnderway::getStatus, 1));
         if (null == underway)
             return null;
-        underway.setEarnings(this.earningsCoefficient(underway.getStartDate(), LocalDateTime.now(), underway.getMoneyQuantity()));
+        underway.setEarnings(this.earningsCoefficient(underway.getStartDate(), LocalDateTime.now(), underway.getMoneyQuantity(), u));
         underwayMapper.updateById(underway);
         Earnings earnings = new Earnings();
         earnings.setEarnings(underway.getEarnings().setScale(4, RoundingMode.HALF_UP).toPlainString());
@@ -120,13 +123,20 @@ public class WkUnderwayServiceImpl extends ServiceImpl<WkUnderwayMapper, WkUnder
         return earnings;
     }
 
-    private BigDecimal earningsCoefficient(LocalDateTime start, LocalDateTime end, BigDecimal sales) {
+    @Autowired
+    private WkVipMapper wkVipMapper;
+
+    private BigDecimal earningsCoefficient(LocalDateTime start, LocalDateTime end, BigDecimal sales, WkUser user) {
         //获取秒数
         long nowSecond = start.toEpochSecond(ZoneOffset.ofHours(0));
         long endSecond = end.toEpochSecond(ZoneOffset.ofHours(0));
         long absSeconds = Math.abs(nowSecond - endSecond);
-        String myRate = commonService.getValueByKey("myRate");
-        BigDecimal daySales = sales.multiply(new BigDecimal(myRate)).setScale(4,BigDecimal.ROUND_HALF_UP);
+        BigDecimal myRate = new BigDecimal(commonService.getValueByKey("myRate"));
+        if (ObjectUtil.isNotEmpty(user.getVipGrade())){
+            WkVip wkVip = wkVipMapper.selectById(user.getVipGrade());
+            myRate = wkVip.getWkRate();
+        }
+        BigDecimal daySales = sales.multiply(myRate).setScale(4,BigDecimal.ROUND_HALF_UP);
         BigDecimal secondSales = daySales.divide(BigDecimal.valueOf(86400), 4,BigDecimal.ROUND_HALF_UP);
         return secondSales.multiply(BigDecimal.valueOf(absSeconds)).setScale(4,BigDecimal.ROUND_HALF_UP);
     }

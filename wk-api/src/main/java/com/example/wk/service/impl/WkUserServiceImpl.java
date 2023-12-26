@@ -1,5 +1,6 @@
 package com.example.wk.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -8,9 +9,11 @@ import com.example.wk.config.AdminSession;
 import com.example.wk.config.JsonResult;
 import com.example.wk.entity.WkTopUp;
 import com.example.wk.entity.WkUser;
+import com.example.wk.entity.WkVip;
 import com.example.wk.entity.WkWithdraw;
 import com.example.wk.mapper.WkTopUpMapper;
 import com.example.wk.mapper.WkUserMapper;
+import com.example.wk.mapper.WkVipMapper;
 import com.example.wk.mapper.WkWithdrawMapper;
 import com.example.wk.pojo.*;
 import com.example.wk.pojo.dto.DealDetail;
@@ -51,6 +54,8 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
     private WkWithdrawMapper withdrawMapper;
     @Autowired
     private CommonService commonService;
+    @Autowired
+    private WkVipMapper wkVipMapper;
 
     @Override
     public JsonResult userLogin(LoginParam login) {
@@ -103,6 +108,14 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         wrapper.ne(WkUser::getUserType,"admin");
         wrapper.orderByDesc(WkUser::getCreatedDate);
         Page<WkUser> wkUserPage = userMapper.selectPage(page, wrapper);
+        for (WkUser wkUser :wkUserPage.getRecords()) {
+            wkUser.setVipName("VIP0");
+            if (ObjectUtil.isNotEmpty(wkUser.getVipGrade())) {
+                WkVip wkVip = wkVipMapper.selectById(wkUser.getVipGrade());
+                wkUser.setVipName(wkVip.getVipName());
+            }
+        }
+
         return wkUserPage;
     }
 
@@ -150,7 +163,18 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         user.setEth(new BigDecimal(param.getEth()));
         user.setBtc(new BigDecimal(param.getBtc()));
         user.setUstd(new BigDecimal(param.getUstd()));
-
+        user.setUstdAds(param.getUstdAds());
+        user.setUstdQrCode(param.getUstdQrCode());
+        user.setBtcAds(param.getBtcAds());
+        user.setBtcQrCode(param.getBtcQrCode());
+        user.setEthAds(param.getEthAds());
+        user.setEthQrCode(param.getEthQrCode());
+        if (ObjectUtil.isNotEmpty(param.getVipGrade())){
+            user.setVipGrade(param.getVipGrade());
+            if (param.getVipGrade().equals(0)){
+                user.setVipGrade(null);
+            }
+        }
         userMapper.updateById(user);
         if (StrUtil.isNotEmpty(user.getToken()))
             AdminSession.getInstance().updateAdmin(user.getToken(),user);
@@ -303,6 +327,11 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
     public UserInfo getUserInfo() {
         UserInfo userInfo = new UserInfo();
         WkUser wkUser = userMapper.selectById(AdminSession.getInstance().admin().getId());
+        userInfo.setVipName("VIP0");
+        if (ObjectUtil.isNotEmpty(wkUser.getVipGrade())) {
+            WkVip wkVip = wkVipMapper.selectById(wkUser.getVipGrade());
+            userInfo.setVipName(wkVip.getVipName());
+        }
         userInfo.setUserEmail(wkUser.getUserEmail());
         userInfo.setPhone(wkUser.getPhone());
         userInfo.setUserName(wkUser.getUserName());

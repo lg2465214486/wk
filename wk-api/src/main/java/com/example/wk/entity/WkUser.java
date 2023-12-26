@@ -1,7 +1,10 @@
 package com.example.wk.entity;
 
 import java.math.BigDecimal;
+
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -79,4 +82,17 @@ public class WkUser implements Serializable {
     private String token;
 
     private String userType;
+
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
+    private Integer vipGrade;
+
+    private String ustdAds;
+    private String ustdQrCode;
+    private String btcAds;
+    private String btcQrCode;
+    private String ethAds;
+    private String ethQrCode;
+
+    @TableField(exist = false)
+    private String vipName;
 }

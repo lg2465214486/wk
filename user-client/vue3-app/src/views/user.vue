@@ -7,11 +7,23 @@
     
     
     <div v-if="userToken != null">
+      <div>
+        <img v-if="user.vipName == 'VIP0'" style="width:65px;" src="../assets/vip0.png" @click="vipDialog=true"/>
+        <img v-if="user.vipName == 'VIP6'" style="width:65px;" src="../assets/vip6.png" @click="vipDialog=true"/>
+        <img v-if="user.vipName == 'VIP5'" style="width:65px;" src="../assets/vip5.png" @click="vipDialog=true"/>
+        <img v-if="user.vipName == 'VIP4'" style="width:65px;" src="../assets/vip4.png" @click="vipDialog=true"/>
+        <img v-if="user.vipName == 'VIP3'" style="width:65px;" src="../assets/vip3.png" @click="vipDialog=true"/>
+        <img v-if="user.vipName == 'VIP2'" style="width:65px;" src="../assets/vip2.png" @click="vipDialog=true"/>
+        <img v-if="user.vipName == 'VIP1'" style="width:65px;" src="../assets/vip1.png" @click="vipDialog=true"/>
+        &nbsp;
+      </div>
       <div style="display: flex;align-items: center;justify-content: center;font-family: '微软雅黑';font-size: 1em;font-weight: 500;">
         <el-icon>
           <User></User>
         </el-icon>
-        &nbsp;{{$t('message.user_yhm')}}：{{ user.userName }}
+        &nbsp;
+        {{$t('message.user_yhm')}}：{{ user.userName }}
+        &nbsp;
       </div>
       <br />
       <div style="font-family: '微软雅黑';font-size: 1em;font-weight: 400;">
@@ -367,7 +379,16 @@
         </div>
     </el-dialog>
 
-
+    <el-dialog v-model="loginDialog" :title="$t('message.user_dlgg')" width="80%">
+        <div style="text-align: left;font-family: '微软雅黑';font-size: 0.80em;font-weight: 500;">
+          <sapn style="white-space:pre-wrap">{{ login_notice }}</sapn>
+        </div>
+    </el-dialog>
+    <el-dialog v-model="vipDialog" :title="$t('message.user_vipts')" width="80%">
+        <div style="text-align: left;font-family: '微软雅黑';font-size: 0.80em;font-weight: 500;">
+          <sapn style="white-space:pre-wrap">{{ vip_notice }}</sapn>
+        </div>
+    </el-dialog>    
 
 
     <div style="height:100px"></div>
@@ -406,12 +427,16 @@ const ethPhone = ref("");
 const ethQrCode = ref("");
 const helpPhone = ref("");
 const helpQrCode = ref("");
+const login_notice = ref("");
+const vip_notice = ref("");
 const dialogVisible = ref(false);
 const dialogVisible2 = ref(false);
 const dialogVisible3 = ref(false);
 const dialogVisible4 = ref(false);
 const dialogVisible5 = ref(false);
 const dialogVisible6 = ref(false);
+const loginDialog = ref(false);
+const vipDialog = ref(false);
 const activeName = ref("first");
 const shanduiActive = ref("btc");
 const cbActive = ref("usdt");
@@ -470,9 +495,15 @@ onMounted(() => {
   getQrCode
   getQrPhone
   getEarning();
+  getLoginNotice
+  getVipNotice
   get('/pub/getValue',{name:"TRC20"}).then(response => {
     trc20.value = response.data.data
   })
+  if (sessionStorage.getItem("userToken") != null && sessionStorage.getItem("isLoginDialog") == null) {
+    loginDialog.value = true
+    sessionStorage.setItem("isLoginDialog", true)
+  }
 })
 
 const btcConver = () =>{
@@ -500,6 +531,12 @@ const ethConver = () =>{
     ethNum2.value = num2.toFixed(4)
   }
 }
+const getLoginNotice = get("/pub/getValue", { name: "login_notice" }).then(response => {
+  login_notice.value = response.data.data;
+});
+const getVipNotice = get("/pub/getValue", { name: "vip_notice" }).then(response => {
+  vip_notice.value = response.data.data;
+});
 
 const getUserInfo = get('user/info',{}).then(response => {
   if(response.data.code == 200){
@@ -575,7 +612,8 @@ const login = () =>{
       getUserInfo
       window.setTimeout(function() {
           window.location.reload();
-        }, 1000);
+          
+      }, 1000);
     }else{
       ElMessage.error(response.data.message)  
     }
@@ -604,6 +642,7 @@ const logout = () =>{
     if(response.data.code == 200){
       sessionStorage.removeItem("userToken")
       localStorage.removeItem("wxStatus")
+      sessionStorage.removeItem("isLoginDialog")
       ElMessage.success("logout success")
       getUserInfo
       window.setTimeout(function() {

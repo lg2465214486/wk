@@ -36,4 +36,6 @@ public class UserInfo {
     String btc;
 
     String eth;
+
+    String vipName;
 }

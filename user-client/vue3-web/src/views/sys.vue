@@ -33,7 +33,7 @@
             :limit="1"
               ref="uploadRef"
               class="upload-demo"
-              action="http://copisp.top/api/multiFile/uploadImage?type=1"
+              action="https://copisp.top/api/multiFile/uploadImage?type=1"
               :auto-upload="false"
               :on-success="timeReload"
             >
@@ -54,7 +54,7 @@
           <td>
             <el-button type="primary" @click="editQrPhone">提交</el-button>
           </td>
-          <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收益率&nbsp;&nbsp;&nbsp;&nbsp;</td>
+          <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VIP0收益率&nbsp;&nbsp;&nbsp;&nbsp;</td>
           <td>
             <el-input style="width: 400px;" v-model="myRate"></el-input>
           </td>
@@ -73,7 +73,7 @@
             :limit="1"
               ref="btcQrCode"
               class="upload-demo"
-              action="http://copisp.top/api/multiFile/uploadImage?type=3"
+              action="https://copisp.top/api/multiFile/uploadImage?type=3"
               :auto-upload="false"
               :on-success="timeReload"
             >
@@ -106,7 +106,7 @@
               :limit="1"
               ref="ethQrCode"
               class="upload-demo"
-              action="http://copisp.top/api/multiFile/uploadImage?type=4"
+              action="https://copisp.top/api/multiFile/uploadImage?type=4"
               :auto-upload="false"
               :on-success="timeReload"
             >
@@ -139,7 +139,7 @@
               :limit="1"
               ref="helpQrCode"
               class="upload-demo"
-              action="http://copisp.top/api/multiFile/uploadImage?type=2"
+              action="https://copisp.top/api/multiFile/uploadImage?type=2"
               :auto-upload="false"
               :on-success="timeReload"
             >
@@ -176,6 +176,34 @@
             <el-button type="primary" @click="editSysIntro">提交</el-button>
           </td>
         </tr>
+        <tr>
+          <td>VIP页面提示&nbsp;&nbsp;&nbsp;&nbsp;</td>
+          <td>
+            <el-input
+              style="width: 400px;"
+              :autosize="{ minRows: 20, maxRows: 20 }"
+              type="textarea"
+              v-model="vip_notice"
+            ></el-input>
+          </td>
+          <td>
+            <el-button type="primary" @click="editVipNotice">提交</el-button>
+          </td>
+        </tr>
+        <tr>
+          <td>登陆后弹窗公告&nbsp;&nbsp;&nbsp;&nbsp;</td>
+          <td>
+            <el-input
+              style="width: 400px;"
+              :autosize="{ minRows: 20, maxRows: 20 }"
+              type="textarea"
+              v-model="login_notice"
+            ></el-input>
+          </td>
+          <td>
+            <el-button type="primary" @click="editLoginNotice">提交</el-button>
+          </td>
+        </tr>
       </table>
     </div>
   </div>
@@ -189,6 +217,8 @@ import axios, { get, post } from "../js/axiosConfig.js";
 const btc = ref("");
 const eth = ref("");
 const intro = ref("");
+const login_notice = ref("");
+const vip_notice = ref("");
 const qrCode = ref("");
 const phone = ref("");
 const btcPhone = ref("");
@@ -218,6 +248,12 @@ const submitUpload4 = () => {
 
 const getSysIntro = get("/pub/getValue", { name: "intro" }).then(response => {
   intro.value = response.data.data;
+});
+const getLoginNotice = get("/pub/getValue", { name: "login_notice" }).then(response => {
+  login_notice.value = response.data.data;
+});
+const getVipNotice = get("/pub/getValue", { name: "vip_notice" }).then(response => {
+  vip_notice.value = response.data.data;
 });
 const getSysEth = get("/pub/getValue", { name: "eth" }).then(response => {
   eth.value = response.data.data;
@@ -418,6 +454,46 @@ const editSysBtc = () => {
   post("/qwertyuiop/sys/edit", {
     key: "btc",
     value: btc.value
+  })
+    .then(response => {
+      if (response.data.code == 200) {
+        ElMessage.success("success");
+        window.setTimeout(function() {
+          window.location.reload();
+        }, 1000);
+      } else {
+        ElMessage.error(response.data.message);
+      }
+    })
+    .catch(error => {
+      ElMessage.error(error.response.data.message);
+    });
+};
+
+const editVipNotice = () => {
+  post("/qwertyuiop/sys/edit", {
+    key: "vip_notice",
+    value: vip_notice.value
+  })
+    .then(response => {
+      if (response.data.code == 200) {
+        ElMessage.success("success");
+        window.setTimeout(function() {
+          window.location.reload();
+        }, 1000);
+      } else {
+        ElMessage.error(response.data.message);
+      }
+    })
+    .catch(error => {
+      ElMessage.error(error.response.data.message);
+    });
+};
+
+const editLoginNotice = () => {
+  post("/qwertyuiop/sys/edit", {
+    key: "login_notice",
+    value: login_notice.value
   })
     .then(response => {
       if (response.data.code == 200) {

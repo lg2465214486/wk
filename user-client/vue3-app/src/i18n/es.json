@@ -59,6 +59,8 @@
         "user_p2":"*Obtener la clave privada equivale a tener la propiedad de los activos de la billetera",
         "user_p3":"*Guardar la clave privada correctamente en un lugar seguro y aislado de la red",
         "user_p4":"*No comparta ni almacene la clave privada en un entorno en línea",
-        "user_tqdz":"Extract address"
+        "user_tqdz":"Extract address",
+        "user_dlgg":"Announcement",
+        "user_vipts":"Hint"
     }
 }

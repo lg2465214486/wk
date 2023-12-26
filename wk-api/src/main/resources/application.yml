@@ -69,9 +69,9 @@ spring:
     url: jdbc:mysql://127.0.0.1:6789/wk?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=GMT%2b8
     username: root
     password: wk202311
-#    url: jdbc:mysql://103.241.72.78:3306/test?useUnicode=true&characterEncoding=utf-8
+#    url: jdbc:mysql://216.224.126.149:6789/wk?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=GMT%2b8
 #    username: root
-#    password: qwer
+#    password: wk202311
     type: com.alibaba.druid.pool.DruidDataSource
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -87,5 +87,5 @@ spring:
 
 file:
   image: /shiyi/image
-  downloadPath: http://copisp.top/api/multiFile/download?fileName=
+  downloadPath: https://copisp.top/api/multiFile/download?fileName=
 #  downloadPath: http://127.0.0.1:8081/multiFile/download?fileName=

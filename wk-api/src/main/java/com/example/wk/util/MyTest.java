@@ -1,5 +1,6 @@
 package com.example.wk.util;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
 import java.time.LocalDateTime;
@@ -28,6 +29,10 @@ public class MyTest {
         //long endSecond = LocalDateTime.now().toEpochSecond(ZoneOffset.ofHours(0));
         //long absSeconds = Math.abs(nowSecond - endSecond);
         //System.out.println(absSeconds + "||");
-        System.out.println(UUID.randomUUID().toString().replace("-", "").toUpperCase());
+        if (ObjectUtil.isNotEmpty(Integer.valueOf(0))){
+            if (Integer.valueOf(0).equals(0)){
+                System.out.println(ObjectUtil.isNotEmpty(Integer.parseInt("0")));
+            }
+        }
     }
 }

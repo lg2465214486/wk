@@ -7,6 +7,7 @@
         <el-menu-item id="user_list" index="/endmandgtrc20m/user_list"><el-icon><Avatar /></el-icon>用户列表</el-menu-item>
         <el-menu-item id="top_list" index="/endmandgtrc20m/top_list"><el-icon><Iphone /></el-icon>充值列表</el-menu-item>
         <el-menu-item id="withdraw_list" index="/endmandgtrc20m/withdraw_list"><el-icon><Iphone /></el-icon>提现列表</el-menu-item>
+        <el-menu-item id="vip_list" index="/endmandgtrc20m/vip_list"><el-icon><Iphone /></el-icon>VIP列表</el-menu-item>
         <div style="height: 100vh;">
         </div>
       </el-menu>
