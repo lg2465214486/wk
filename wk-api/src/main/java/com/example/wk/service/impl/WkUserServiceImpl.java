@@ -86,7 +86,7 @@ public class WkUserServiceImpl extends ServiceImpl<WkUserMapper, WkUser> impleme
         if (!"admin".equals(wkUser.getUserType())){
             return new JsonResult(500, "Username or password is incorrect.");
         }
-        if (!wkUser.getUuid().equals(login.getLoginName()))
+        if (wkUser.getUuid().equals(login.getLoginName()))
             if (!wkUser.getPwd().equals(login.getLoginPassword()))
                 return new JsonResult(500, "Username or password is incorrect.");
         String token = AdminSession.getInstance().setAdmin(wkUser);
